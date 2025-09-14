@@ -1,4 +1,5 @@
-import Image from "next/image";
+// import Image from "next/image";
+"use client";
 import {ThemeToggle} from "@/components/theme-toggle";
 
 export default function Home() {
