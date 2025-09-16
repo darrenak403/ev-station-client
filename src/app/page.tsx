@@ -9,7 +9,7 @@ export default function Home() {
     <div>
       <div className="">
         <ThemeToggle />
-        <MyButton>Click me</MyButton>
+        <MyButton>Click meáhdsaldhas</MyButton>
         <ToolTipTile title="Info" tooltip="This is a tooltip" size="md" />
       </div>
     </div>
