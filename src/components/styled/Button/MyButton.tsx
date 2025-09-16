@@ -49,23 +49,22 @@ export interface MyButtonProps
   extends Omit<ButtonProps, "size">,
     VariantProps<typeof buttonVariants> {}
 
-export const MyButton = React.forwardRef<HTMLButtonElement, MyButtonProps>(
-  (
-    {
-      kind = "primary",
-      size = "md",
-      variantKind = "solid",
-      shape = "rounded",
-      className,
-      ...props
-    },
-    ref
-  ) => (
+export function MyButton(
+  {
+    kind = "primary",
+    size = "md",
+    variantKind = "solid",
+    shape = "rounded",
+    className,
+    ...props
+  }: MyButtonProps,
+  ref?: React.Ref<HTMLButtonElement>
+) {
+  return (
     <Button
       ref={ref}
       className={buttonVariants({kind, size, variantKind, shape, className})}
       {...props}
     />
-  )
-);
-MyButton.displayName = "MyButton";
+  );
+}
