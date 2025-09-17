@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
+import React, { useState, useEffect } from "react";
 import {
-  Button,
   Navbar,
   NavbarBrand,
   NavbarContent,
@@ -12,9 +12,24 @@ import {
 } from "@heroui/react";
 import { ThemeToggle } from "../modules/SwithTheme/theme-toggle";
 import { AppButton } from "../styled";
+
 export function Header() {
-    return (
-       <Navbar isBordered className="bg-background/95 backdrop-blur">
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if accessToken exists in localStorage
+    const token = localStorage.getItem("accessToken");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    setIsLoggedIn(false);
+    window.location.href = "/";
+  };
+
+  return (
+    <Navbar isBordered className="bg-background/95 backdrop-blur">
       <NavbarContent>
         <NavbarBrand>
           <Link href="/" className="flex items-center space-x-2">
@@ -55,15 +70,30 @@ export function Header() {
             Tìm trạm
           </AppButton>
         </NavbarItem>
-        <NavbarItem>
-          <Link href="/auth/sign-in" passHref >
-            <AppButton as="a" variant="bordered" size="sm" kind="primary">
-              Đăng nhập
+        
+        {isLoggedIn ? (
+          <NavbarItem>
+            <AppButton 
+              variant="bordered" 
+              size="sm" 
+              kind="third"
+              onPress={handleLogout}
+            >
+              Đăng xuất
             </AppButton>
-          </Link>
-        </NavbarItem>
+          </NavbarItem>
+        ) : (
+          <NavbarItem>
+            <Link href="/auth/sign-in" passHref>
+              <AppButton as="a" variant="bordered" size="sm" kind="primary">
+                Đăng nhập
+              </AppButton>
+            </Link>
+          </NavbarItem>
+        )}
+        
         <NavbarItem>
-             <ThemeToggle />
+          <ThemeToggle />
         </NavbarItem>
         <NavbarMenuToggle className="md:hidden" />
       </NavbarContent>
@@ -89,7 +119,28 @@ export function Header() {
             Giá cả
           </a>
         </NavbarMenuItem>
+        
+        {/* Mobile menu auth button */}
+        <NavbarMenuItem>
+          {isLoggedIn ? (
+            <AppButton 
+              variant="bordered" 
+              size="sm" 
+              kind="secondary"
+              onPress={handleLogout}
+              className="w-full"
+            >
+              Đăng xuất
+            </AppButton>
+          ) : (
+            <Link href="/auth/sign-in" className="w-full">
+              <AppButton as="a" variant="bordered" size="sm" kind="primary" className="w-full">
+                Đăng nhập
+              </AppButton>
+            </Link>
+          )}
+        </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>
-    );
+  );
 }

@@ -10,6 +10,7 @@ export const buttonVariants = cva(
       kind: {
         primary: "bg-blue-600 text-white hover:bg-blue-700",
         secondary: "bg-gray-100 text-gray-700 hover:bg-gray-200",
+        third: "bg-red-600 text-white hover:bg-red-700",
       },
       
     },
@@ -20,7 +21,7 @@ export const buttonVariants = cva(
 );
 
 export interface AppButtonProps extends ButtonProps {
-    kind?: "primary" | "secondary";
+    kind?: "primary" | "secondary" | "third";
 }
 
 export const AppButton = (props: AppButtonProps) => {
