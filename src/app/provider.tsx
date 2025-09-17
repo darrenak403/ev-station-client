@@ -1,6 +1,6 @@
 // app/providers.tsx
 "use client";
-
+import React from "react";
 import {HeroUIProvider} from "@heroui/react";
 import {ThemeProvider} from "next-themes";
 
