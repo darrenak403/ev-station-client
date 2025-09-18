@@ -8,7 +8,7 @@ import {postMutationFetcher} from "@/lib/fetcher";
 import {GoogleLogin} from "@react-oauth/google";
 import Link from "next/link";
 import * as Yup from "yup";
-import {useRouter} from "next/router";
+import {useRouter} from "next/navigation";
 
 interface ApiError {
   response?: {
@@ -27,6 +27,8 @@ interface LoginRequest {
 interface AuthResponse {
   token: string;
   user?: unknown;
+  message: string;
+  isSuccess: boolean;
 }
 
 export function SignIn() {
@@ -63,19 +65,35 @@ export function SignIn() {
             },
           }
         );
+        console.log(result.message)
+        if(result.message === "Password is incorrect"){
+          setAlertMessage("Mật khẩu không đúng!");
+          setAlertColor("danger");
+          setShowAlert(true);
+          return;
 
-        console.log("✅ Đăng nhập thành công:", result);
+        }
 
-        localStorage.setItem("accessToken", result.token);
+        if(result.message === "Email is not exist in the system"){
+          setAlertMessage("Người dùng không tồn tại!");
+          setAlertColor("danger");
+          setShowAlert(true);
+          return;
+        }
 
-        setAlertMessage("Đăng nhập thành công!");
-        setAlertColor("success");
-        setShowAlert(true);
+        if (result.isSuccess){
+          console.log("✅ Đăng nhập thành công:", result);
+          localStorage.setItem("accessToken", result.token);
+          setAlertMessage("Đăng nhập thành công!");
+          setAlertColor("success");
+          setShowAlert(true);
 
-        setTimeout(() => {
-          setShowAlert(false);
-          window.location.href = "/";
-        }, 2000);
+          setTimeout(() => {
+            setShowAlert(false);
+            router.push("/");
+          }, 2000);
+        }
+        
       } catch (error) {
         console.error("Đăng nhập thất bại:", error);
         setAlertMessage("Đăng nhập thất bại!");
@@ -165,12 +183,12 @@ export function SignIn() {
                   Đăng nhập
                 </AppButton>
                 <div className="text-center mt-2">
-                  <a
+                  <Link
                     href="#"
                     className="text-blue-600 hover:text-blue-800 text-xs"
                   >
                     Quên mật khẩu?
-                  </a>
+                  </Link>
                 </div>
                 <div className="flex items-center gap-4 my-4">
                   <Divider className="flex-1" />
