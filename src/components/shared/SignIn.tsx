@@ -1,97 +1,100 @@
 "use client";
-import React, { useState } from "react";
-import { Alert, Input, Divider } from "@heroui/react";
-import {  EyeIcon } from "@phosphor-icons/react";
-import { useFormik } from "formik";
-import { AppButton } from "@/components";
-import { postMutationFetcher } from "@/lib/fetcher";
-import { GoogleLogin } from "@react-oauth/google";
+import React, {useState} from "react";
+import {Alert, Input, Divider} from "@heroui/react";
+import {EyeIcon} from "@phosphor-icons/react";
+import {useFormik} from "formik";
+import {AppButton} from "@/components";
+import {postMutationFetcher} from "@/lib/fetcher";
+import {GoogleLogin} from "@react-oauth/google";
 import Link from "next/link";
 import * as Yup from "yup";
+import {useRouter} from "next/router";
 
 interface ApiError {
-    response?: {
-        data?: {
-            message?: string;
-        };
+  response?: {
+    data?: {
+      message?: string;
     };
-    message?: string;
+  };
+  message?: string;
 }
 
 interface LoginRequest {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 
-
 interface AuthResponse {
-    token: string;
-    user?: unknown;
+  token: string;
+  user?: unknown;
 }
 
 export function SignIn() {
-    const [showPassword, setShowPassword] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("");
-    const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
-    
-    const formik = useFormik({
-        initialValues: {
-            email: "",
-            password: "",
-        },
-        validationSchema: Yup.object({
-            email: Yup.string()
-            .required("Email là bắt buộc")
-            .email("Email không hợp lệ"),
-            password: Yup.string()
-            .required("Mật khẩu là bắt buộc")
-            .min(8, "Mật khẩu phải ít nhất 8 ký tự")
-            .matches(/[A-Z]/, "Mật khẩu phải có ít nhất 1 chữ hoa")
-            .matches(/[a-z]/, "Mật khẩu phải có ít nhất 1 chữ thường")
-            .matches(/[0-9]/, "Mật khẩu phải có ít nhất 1 số"),
-        }),
-        onSubmit: async(values) => {
-            try {
-                const result = await postMutationFetcher<AuthResponse, LoginRequest>(
-                    '/api/v1/auth/login',
-                    {
-                        arg: {
-                            email: values.email,
-                            password: values.password
-                        }
-                    }
-                );
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
 
-                console.log("✅ Đăng nhập thành công:", result);
-                
-                localStorage.setItem("accessToken", result.token);
-                
-                setAlertMessage("Đăng nhập thành công!");
-                setAlertColor("success");
-                setShowAlert(true);
-                
-                setTimeout(() => {
-                    setShowAlert(false);
-                    window.location.href = "/";
-                }, 2000);
-            } catch (error) {
-                console.error("Đăng nhập thất bại:", error);
-                setAlertMessage("Đăng nhập thất bại!");
-                setAlertColor("danger");
-                setShowAlert(true);
-            }
-        },
-    });
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .required("Email là bắt buộc")
+        .email("Email không hợp lệ"),
+      password: Yup.string()
+        .required("Mật khẩu là bắt buộc")
+        .min(8, "Mật khẩu phải ít nhất 8 ký tự")
+        .matches(/[A-Z]/, "Mật khẩu phải có ít nhất 1 chữ hoa")
+        .matches(/[a-z]/, "Mật khẩu phải có ít nhất 1 chữ thường")
+        .matches(/[0-9]/, "Mật khẩu phải có ít nhất 1 số"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const result = await postMutationFetcher<AuthResponse, LoginRequest>(
+          "/api/v1/auth/login",
+          {
+            arg: {
+              email: values.email,
+              password: values.password,
+            },
+          }
+        );
 
- 
+        console.log("✅ Đăng nhập thành công:", result);
+
+        localStorage.setItem("accessToken", result.token);
+
+        setAlertMessage("Đăng nhập thành công!");
+        setAlertColor("success");
+        setShowAlert(true);
+
+        setTimeout(() => {
+          setShowAlert(false);
+          window.location.href = "/";
+        }, 2000);
+      } catch (error) {
+        console.error("Đăng nhập thất bại:", error);
+        setAlertMessage("Đăng nhập thất bại!");
+        setAlertColor("danger");
+        setShowAlert(true);
+      }
+    },
+  });
+
   return (
     <div className="min-h-screen flex items-center justify-center p-8 ">
       <div className="flex w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden">
         <div className="flex-1 flex items-center justify-center p-10 bg-gray-50">
           <div className="w-full max-w-md">
             {showAlert && (
-              <Alert color={alertColor} className="fixed top-16 right-0 z-50 w-auto max-w-sm">
+              <Alert
+                color={alertColor}
+                className="fixed top-16 right-0 z-50 w-auto max-w-sm"
+              >
                 {alertMessage}
               </Alert>
             )}
@@ -103,10 +106,12 @@ export function SignIn() {
                 Chào mừng bạn trở lại
               </p>
               <div className="flex flex-col gap-4">
-                 <Input                               
-                  label="Email" 
+                <Input
+                  label="Email"
                   value={formik.values.email}
-                  onValueChange={(value) => formik.setFieldValue("email", value)}
+                  onValueChange={(value) =>
+                    formik.setFieldValue("email", value)
+                  }
                   isInvalid={!!formik.errors.email && formik.touched.email}
                   errorMessage={formik.errors.email}
                   onBlur={() => formik.setFieldTouched("email")}
@@ -114,16 +119,20 @@ export function SignIn() {
                   variant="bordered"
                   classNames={{
                     input: "text-sm",
-                    inputWrapper: "h-12"
+                    inputWrapper: "h-12",
                   }}
-                 />
-                 <Input 
+                />
+                <Input
                   className="relative"
-                  label="Mật khẩu" 
-                  type={showPassword ? "text" : "password"} 
+                  label="Mật khẩu"
+                  type={showPassword ? "text" : "password"}
                   value={formik.values.password}
-                  onValueChange={(value) => formik.setFieldValue("password", value)}
-                  isInvalid={!!formik.errors.password && formik.touched.password}
+                  onValueChange={(value) =>
+                    formik.setFieldValue("password", value)
+                  }
+                  isInvalid={
+                    !!formik.errors.password && formik.touched.password
+                  }
                   errorMessage={formik.errors.password}
                   onBlur={() => formik.setFieldTouched("password")}
                   autoComplete="new-password"
@@ -131,20 +140,24 @@ export function SignIn() {
                   variant="bordered"
                   classNames={{
                     input: "text-sm",
-                    inputWrapper: "h-12"
+                    inputWrapper: "h-12",
                   }}
                   endContent={
-                    <EyeIcon 
-                      className={`cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 ${showPassword ? "text-blue-500" : "text-gray-400 hover:text-gray-600"}`}
-                      size={18} 
-                      onClick={() => setShowPassword(!showPassword)} 
+                    <EyeIcon
+                      className={`cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 ${
+                        showPassword
+                          ? "text-blue-500"
+                          : "text-gray-400 hover:text-gray-600"
+                      }`}
+                      size={18}
+                      onClick={() => setShowPassword(!showPassword)}
                     />
-                  } 
+                  }
                 />
-                <AppButton 
-                  isLoading={formik.isSubmitting} 
-                  isDisabled={!formik.isValid} 
-                  onPress={() => formik.submitForm()} 
+                <AppButton
+                  isLoading={formik.isSubmitting}
+                  isDisabled={!formik.isValid}
+                  onPress={() => formik.submitForm()}
                   kind="primary"
                   className="w-full mt-3 h-12 text-base font-semibold"
                   size="md"
@@ -152,7 +165,10 @@ export function SignIn() {
                   Đăng nhập
                 </AppButton>
                 <div className="text-center mt-2">
-                  <a href="#" className="text-blue-600 hover:text-blue-800 text-xs">
+                  <a
+                    href="#"
+                    className="text-blue-600 hover:text-blue-800 text-xs"
+                  >
                     Quên mật khẩu?
                   </a>
                 </div>
@@ -171,19 +187,23 @@ export function SignIn() {
                       return;
                     }
                     try {
-                      const result = await postMutationFetcher<AuthResponse, { idToken: string }>(
-                        '/api/v1/auth/google-login',
-                        { arg: { idToken } }
-                      );
-                      console.log("✅ Đăng nhập Google thành công:", result);
+                      const result = await postMutationFetcher<
+                        AuthResponse,
+                        {idToken: string}
+                      >("/api/v1/auth/google-login", {arg: {idToken}});
+                      console.log("Đăng nhập Google thành công:", result);
                       localStorage.setItem("accessToken", result.token);
                       setAlertMessage("Đăng nhập Google thành công!");
                       setAlertColor("success");
                       setShowAlert(true);
-                      setTimeout(() => { setShowAlert(false); window.location.href = "/"; }, 2000);
+                      setTimeout(() => {
+                        setShowAlert(false);
+                        router.push("/");
+                      }, 2000);
                     } catch (err: unknown) {
                       const apiError = err as ApiError;
-                      const errorMessage = apiError.response?.data?.message ||
+                      const errorMessage =
+                        apiError.response?.data?.message ||
                         apiError.message ||
                         "Đăng nhập Google thất bại!";
                       setAlertMessage(errorMessage);
@@ -204,7 +224,10 @@ export function SignIn() {
                   <span className="text-gray-600 text-xs">
                     Chưa có tài khoản?{" "}
                   </span>
-                  <Link href="/auth/sign-up" className="text-blue-600 hover:text-blue-800 text-xs font-medium">
+                  <Link
+                    href="/auth/sign-up"
+                    className="text-blue-600 hover:text-blue-800 text-xs font-medium"
+                  >
                     Đăng ký
                   </Link>
                 </div>
