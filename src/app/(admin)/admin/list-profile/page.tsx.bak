@@ -1,0 +1,12 @@
+import React from "react";
+
+const ListProfilePage = () => {
+  return (
+    <div>
+      <div>List Profile Page</div>
+      <button>Get User ID</button>
+    </div>
+  );
+};
+
+export default ListProfilePage;

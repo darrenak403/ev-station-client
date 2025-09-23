@@ -1,3 +1,3 @@
-export * from "./SignIn"
+export * from "./Auth"
 export * from "./Header"
-export * from "./SignUp"
+export * from "./Footer"

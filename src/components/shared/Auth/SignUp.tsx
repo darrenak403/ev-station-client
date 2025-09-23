@@ -1,23 +1,13 @@
 "use client";
-import React, {useState} from "react";
-import {Alert, Input, Divider} from "@heroui/react";
-import {EyeIcon} from "@phosphor-icons/react";
-import {useFormik} from "formik";
-import {AppButton} from "@/components";
-import {postMutationFetcher} from "@/lib/fetcher";
-import {GoogleLogin} from "@react-oauth/google";
-import Link from "next/link";
+import React, { useState } from "react";
+import { Alert, Input } from "@heroui/react";
+import { EyeIcon } from "@phosphor-icons/react";
+import { useFormik } from "formik";
 import * as Yup from "yup";
-import {useRouter} from "next/navigation";
-
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
-  message?: string;
-}
+import { MyButton } from "../../styled";
+import Link from "next/link";
+import { postMutationFetcher } from "@/lib/fetcher";
+import { useRouter } from "next/navigation";
 
 interface LoginRequest {
   email: string;
@@ -31,7 +21,7 @@ interface AuthResponse {
   isSuccess: boolean;
 }
 
-export function SignIn() {
+export function SignUp() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -42,6 +32,7 @@ export function SignIn() {
     initialValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
     validationSchema: Yup.object({
       email: Yup.string()
@@ -53,11 +44,14 @@ export function SignIn() {
         .matches(/[A-Z]/, "Mật khẩu phải có ít nhất 1 chữ hoa")
         .matches(/[a-z]/, "Mật khẩu phải có ít nhất 1 chữ thường")
         .matches(/[0-9]/, "Mật khẩu phải có ít nhất 1 số"),
+      confirmPassword: Yup.string()
+        .required("Xác nhận mật khẩu là bắt buộc")
+        .oneOf([Yup.ref("password")], "Mật khẩu không khớp"),
     }),
     onSubmit: async (values) => {
       try {
         const result = await postMutationFetcher<AuthResponse, LoginRequest>(
-          "/api/v1/auth/login",
+          "/api/v1/auth/register",
           {
             arg: {
               email: values.email,
@@ -65,38 +59,29 @@ export function SignIn() {
             },
           }
         );
-        console.log(result.message)
-        if(result.message === "Password is incorrect"){
-          setAlertMessage("Mật khẩu không đúng!");
-          setAlertColor("danger");
-          setShowAlert(true);
-          return;
+        console.log(result.message);
 
-        }
-
-        if(result.message === "Email is not exist in the system"){
-          setAlertMessage("Người dùng không tồn tại!");
+        if (result.message === "Email is already in use.") {
+          setAlertMessage("Email đã được sử dụng!");
           setAlertColor("danger");
           setShowAlert(true);
           return;
         }
 
-        if (result.isSuccess){
-          console.log("✅ Đăng nhập thành công:", result);
-          localStorage.setItem("accessToken", result.token);
-          setAlertMessage("Đăng nhập thành công!");
+        if (result.isSuccess) {
+          //localStorage.setItem("accessToken", result.token);
+          setAlertMessage("Đăng ký thành công! Bạn có thể đăng nhập!");
           setAlertColor("success");
           setShowAlert(true);
 
           setTimeout(() => {
             setShowAlert(false);
-            router.push("/");
-          }, 2000);
+            router.push("/auth/sign-in");
+          }, 1000);
         }
-        
       } catch (error) {
-        console.error("Đăng nhập thất bại:", error);
-        setAlertMessage("Đăng nhập thất bại!");
+        console.error("Đăng ký thất bại:", error);
+        setAlertMessage("Đăng ký thất bại!");
         setAlertColor("danger");
         setShowAlert(true);
       }
@@ -118,10 +103,10 @@ export function SignIn() {
             )}
             <div className="bg-white rounded-2xl shadow-xl p-8">
               <h1 className="text-2xl font-bold text-center mb-1 text-gray-900">
-                Đăng nhập
+                Đăng ký
               </h1>
               <p className="text-gray-500 text-center mb-6 text-sm">
-                Chào mừng bạn trở lại
+                Chào mừng bạn đến với chúng tôi
               </p>
               <div className="flex flex-col gap-4">
                 <Input
@@ -172,7 +157,40 @@ export function SignIn() {
                     />
                   }
                 />
-                <AppButton
+                <Input
+                  className="relative"
+                  label="Xác nhận mật khẩu"
+                  type={showPassword ? "text" : "password"}
+                  value={formik.values.confirmPassword}
+                  onValueChange={(value) =>
+                    formik.setFieldValue("confirmPassword", value)
+                  }
+                  isInvalid={
+                    !!formik.errors.confirmPassword &&
+                    formik.touched.confirmPassword
+                  }
+                  errorMessage={formik.errors.confirmPassword}
+                  onBlur={() => formik.setFieldTouched("confirmPassword")}
+                  autoComplete="new-password"
+                  size="md"
+                  variant="bordered"
+                  classNames={{
+                    input: "text-sm",
+                    inputWrapper: "h-12",
+                  }}
+                  endContent={
+                    <EyeIcon
+                      className={`cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 ${
+                        showPassword
+                          ? "text-blue-500"
+                          : "text-gray-400 hover:text-gray-600"
+                      }`}
+                      size={18}
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  }
+                />
+                <MyButton
                   isLoading={formik.isSubmitting}
                   isDisabled={!formik.isValid}
                   onPress={() => formik.submitForm()}
@@ -180,73 +198,17 @@ export function SignIn() {
                   className="w-full mt-3 h-12 text-base font-semibold"
                   size="md"
                 >
-                  Đăng nhập
-                </AppButton>
-                <div className="text-center mt-2">
-                  <Link
-                    href="#"
-                    className="text-blue-600 hover:text-blue-800 text-xs"
-                  >
-                    Quên mật khẩu?
-                  </Link>
-                </div>
-                <div className="flex items-center gap-4 my-4">
-                  <Divider className="flex-1" />
-                  <span className="text-gray-400 text-xs">hoặc</span>
-                  <Divider className="flex-1" />
-                </div>
-                <GoogleLogin
-                  onSuccess={async (credentialResponse) => {
-                    const idToken = credentialResponse.credential;
-                    if (!idToken) {
-                      setAlertMessage("Không lấy được idToken từ Google!");
-                      setAlertColor("danger");
-                      setShowAlert(true);
-                      return;
-                    }
-                    try {
-                      const result = await postMutationFetcher<
-                        AuthResponse,
-                        {idToken: string}
-                      >("/api/v1/auth/google-login", {arg: {idToken}});
-                      console.log("Đăng nhập Google thành công:", result);
-                      localStorage.setItem("accessToken", result.token);
-                      setAlertMessage("Đăng nhập Google thành công!");
-                      setAlertColor("success");
-                      setShowAlert(true);
-                      setTimeout(() => {
-                        setShowAlert(false);
-                        router.push("/");
-                      }, 2000);
-                    } catch (err: unknown) {
-                      const apiError = err as ApiError;
-                      const errorMessage =
-                        apiError.response?.data?.message ||
-                        apiError.message ||
-                        "Đăng nhập Google thất bại!";
-                      setAlertMessage(errorMessage);
-                      setAlertColor("danger");
-                      setShowAlert(true);
-                      setTimeout(() => setShowAlert(false), 3000);
-                    }
-                  }}
-                  onError={() => {
-                    setAlertMessage("Lỗi đăng nhập Google!");
-                    setAlertColor("danger");
-                    setShowAlert(true);
-                    setTimeout(() => setShowAlert(false), 3000);
-                  }}
-                  width="100%"
-                />
+                  Đăng ký
+                </MyButton>
                 <div className="text-center mt-4">
                   <span className="text-gray-600 text-xs">
-                    Chưa có tài khoản?{" "}
+                    Đã có tài khoản?{" "}
                   </span>
                   <Link
-                    href="/auth/sign-up"
+                    href="/auth/sign-in"
                     className="text-blue-600 hover:text-blue-800 text-xs font-medium"
                   >
-                    Đăng ký
+                    Đăng nhập
                   </Link>
                 </div>
               </div>
@@ -256,10 +218,10 @@ export function SignIn() {
         <div className="flex-1 bg-blue-500 flex items-center justify-center p-12">
           <div className="text-center">
             <h2 className="text-white text-2xl font-bold mb-4">
-              Chào mừng trở lại!
+              Chào mừng bạn!
             </h2>
             <p className="text-blue-100 text-base max-w-md mx-auto">
-              Đăng nhập để tiếp tục sử dụng dịch vụ của chúng tôi
+              Đăng ký để tiếp tục sử dụng dịch vụ của chúng tôi
             </p>
           </div>
         </div>
