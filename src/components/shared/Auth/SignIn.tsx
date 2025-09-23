@@ -27,9 +27,10 @@ export function SignIn() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
-  
+
   const { login, loading } = useFetchLoginSwrSingleton();
-  const { loginWithGoogle, loading: googleLoading } = useFetchLoginGoogleSingleton(); 
+  const { loginWithGoogle, loading: googleLoading } =
+    useFetchLoginGoogleSingleton();
 
   const formik = useFormik({
     initialValues: {
@@ -58,7 +59,7 @@ export function SignIn() {
           setAlertMessage(result.message);
           setAlertColor("success");
           setShowAlert(true);
-          console.log(result.accessToken)
+          console.log(result.accessToken);
           localStorage.setItem("accessToken", result.accessToken);
           setTimeout(() => {
             setShowAlert(false);
@@ -85,15 +86,15 @@ export function SignIn() {
       showAlertMsg("Không lấy được idToken!", "danger");
       return;
     }
-    
+
     try {
-      const result = await loginWithGoogle(idToken); 
-      
-      if (result.isSuccess) {       
-        showAlertMsg(result.message || "Đăng nhập Google thành công hehe!", "success");
+      const result = await loginWithGoogle(idToken);
+
+      if (result.isSuccess) {
+        showAlertMsg(result.message, "success");
         setTimeout(() => router.push("/"), 2000);
       } else {
-        showAlertMsg(result.message || "Đăng nhập Google thất bại!", "danger");
+        showAlertMsg(result.message, "danger");
       }
     } catch (err: unknown) {
       const apiError = err as ApiError;
