@@ -22,15 +22,13 @@ export const useFetchLoginSwrCore = () => {
     setLoading(true);
     setError(null);
     try {
-      // giữ behavior: chờ 3s trước khi gọi API
-      await new Promise((r) => setTimeout(r, 3000));
+      await new Promise((r) => setTimeout(r, 2000));
 
       const result = await postMutationFetcher<AuthResponse, LoginRequest>(
         "/api/v1/auth/login",
         { arg: payload }
       );
 
-      // Lưu token & message khi thành công (giữ tương thích với logic cũ)
       if (result?.isSuccess) {
         if (result.accessToken) {
             console.log("Access Token:", result.accessToken);

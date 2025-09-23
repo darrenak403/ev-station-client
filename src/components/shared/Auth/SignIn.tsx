@@ -4,13 +4,13 @@ import { Alert, Input, Divider } from "@heroui/react";
 import { EyeIcon } from "@phosphor-icons/react";
 import { useFormik } from "formik";
 import { MyButton } from "@/components";
-import { postMutationFetcher } from "@/lib/fetcher";
 import { GoogleLogin } from "@react-oauth/google";
 import Link from "next/link";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import type { CredentialResponse } from "@react-oauth/google";
 import { useFetchLoginSwrSingleton } from "@/hook/singleton/swrs/useFetchLoginSwr";
+import { useFetchLoginGoogleSingleton } from "@/hook/singleton/swrs/useFetchLoginGoogleSwr"; // Import hook Google
 
 interface ApiError {
   response?: {
@@ -21,21 +21,16 @@ interface ApiError {
   message?: string;
 }
 
-interface AuthResponse {
-  token: string;
-  user?: unknown;
-  message: string;
-  isSuccess: boolean;
-}
-
 export function SignIn() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
-  const [googleLoading, setGoogleLoading] = useState(false);
+
   const { login, loading } = useFetchLoginSwrSingleton();
+  const { loginWithGoogle, loading: googleLoading } =
+    useFetchLoginGoogleSingleton();
 
   const formik = useFormik({
     initialValues: {
@@ -64,7 +59,7 @@ export function SignIn() {
           setAlertMessage(result.message);
           setAlertColor("success");
           setShowAlert(true);
-          console.log(result.accessToken)
+          console.log(result.accessToken);
           localStorage.setItem("accessToken", result.accessToken);
           setTimeout(() => {
             setShowAlert(false);
@@ -86,25 +81,21 @@ export function SignIn() {
   });
 
   const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
-    setGoogleLoading(true);
     const idToken = credentialResponse.credential;
     if (!idToken) {
-      setGoogleLoading(false);
       showAlertMsg("Không lấy được idToken!", "danger");
       return;
     }
-    try {
-      // Loading trong 2 giây trước khi gọi API Google
-      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const result = await postMutationFetcher<
-        AuthResponse,
-        { idToken: string }
-      >("/api/v1/auth/google-login", { arg: { idToken } });
-      localStorage.setItem("accessToken", result.token);
-      localStorage.setItem("loginSuccessMsg", "Đăng nhập Google thành công!");
-      showAlertMsg("Đăng nhập Google thành công!", "success");
-      setTimeout(() => router.push("/"), 2000);
+    try {
+      const result = await loginWithGoogle(idToken);
+
+      if (result.isSuccess) {
+        showAlertMsg(result.message, "success");
+        setTimeout(() => router.push("/"), 2000);
+      } else {
+        showAlertMsg(result.message, "danger");
+      }
     } catch (err: unknown) {
       const apiError = err as ApiError;
       const msg =
@@ -112,8 +103,6 @@ export function SignIn() {
         apiError.message ||
         "Đăng nhập Google thất bại!";
       showAlertMsg(msg, "danger");
-    } finally {
-      setGoogleLoading(false);
     }
   };
 
@@ -131,7 +120,7 @@ export function SignIn() {
           <div className="w-full max-w-md">
             {showAlert && (
               <Alert
-              hideIconWrapper
+                hideIconWrapper
                 color={alertColor}
                 className="fixed top-1 right-0 z-50 w-auto max-w-sm"
               >
