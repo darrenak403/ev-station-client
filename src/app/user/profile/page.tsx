@@ -31,6 +31,7 @@ export default function ProfilePage() {
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const userRole = useAppSelector((state) => state.auth.data?.user?.roleName);
   const userId = useAppSelector((state) => state.auth.data?.user?.id);
+  const fullName = useAppSelector((state) => state.auth.data?.user?.fullName);
 
   const [frontImage, setFrontImage] = useState<File | null>(null);
   const [backImage, setBackImage] = useState<File | null>(null);
@@ -74,7 +75,6 @@ export default function ProfilePage() {
       }
 
       const folderName = userId ? `user-${userId}` : "temp";
-      // Upload images first
       const [frontUrl, backUrl] = await Promise.all([
         uploadToCloudinary(frontImage, folderName),
         uploadToCloudinary(backImage, folderName),
@@ -82,7 +82,6 @@ export default function ProfilePage() {
 
       console.log("Uploaded to Cloudinary:", { frontUrl, backUrl });
 
-      // Call scan API with only URLs (backend expects frontImageUrl + backImageUrl)
       const payload = {
         frontImageUrl: frontUrl,
         backImageUrl: backUrl,
@@ -121,7 +120,7 @@ export default function ProfilePage() {
 
       {/* Debug / info */}
       <div className="mb-3 text-sm text-foreground-500">
-        Vai trò: {userRole ?? "Chưa xác định"} {userId ? `• id: ${accessToken}` : ""}
+        Vai trò: {userRole ?? "Chưa xác định"} {fullName ? `• name: ${fullName}` : ""}
       </div>
 
       {error && (
