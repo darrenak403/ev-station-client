@@ -1,4 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { store } from "@/redux/store";
+import { setAccessToken, clearAuth } from "@/redux/slices/authSlice";
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://localhost:8081";
 
@@ -11,34 +13,50 @@ const axiosInstance = axios.create({
 });
 
 // =================== REQUEST INTERCEPTOR ===================
-axiosInstance.interceptors.request.use(
-  (config) => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("accessToken");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+axiosInstance.interceptors.request.use((config) => {
+  const token = store.getState().auth.accessToken;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 // =================== RESPONSE INTERCEPTOR ===================
 axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("accessToken");
-      if (typeof window !== "undefined") {
-        window.location.href = "/auth/sign-in";
+  (res) => res,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      const refreshToken = store.getState().auth.refreshToken;
+      if (refreshToken) {
+        try {
+          const { data } = await axios.post(`${baseURL}/api/v1/auth/refresh-token`, {
+            refreshToken,
+          });
+
+          if (data?.accessToken) {
+            store.dispatch(setAccessToken(data.accessToken));
+
+            originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+            return axiosInstance(originalRequest); 
+          }
+        } catch (refreshError) {
+          console.error("Refresh token thất bại:", refreshError);
+        }
       }
+
+      store.dispatch(clearAuth());
+      if (typeof window !== "undefined") window.location.href = "/auth/sign-in";
     }
+
     return Promise.reject(error);
   }
 );
 
-// =================== FETCHERS FOR useSWR (GET) ===================
+// =================== FETCHERS ===================
 export const fetcher = async <T>(url: string): Promise<T> => {
   const response: AxiosResponse<T> = await axiosInstance.get(url);
   return response.data;
@@ -51,9 +69,7 @@ export const fetcherWithConfig = async <T>(
   return response.data;
 };
 
-// =================== FETCHERS FOR useSWRMutation ===================
-
-// POST mutation fetcher
+// POST
 export const postMutationFetcher = async <TResponse, TBody = unknown>(
   url: string,
   { arg }: { arg: TBody }
@@ -62,7 +78,7 @@ export const postMutationFetcher = async <TResponse, TBody = unknown>(
   return response.data;
 };
 
-// PUT mutation fetcher
+// PUT
 export const putMutationFetcher = async <TResponse, TBody = unknown>(
   url: string,
   { arg }: { arg: TBody }
@@ -71,7 +87,7 @@ export const putMutationFetcher = async <TResponse, TBody = unknown>(
   return response.data;
 };
 
-// PATCH mutation fetcher
+// PATCH
 export const patchMutationFetcher = async <TResponse, TBody = unknown>(
   url: string,
   { arg }: { arg: TBody }
@@ -80,7 +96,7 @@ export const patchMutationFetcher = async <TResponse, TBody = unknown>(
   return response.data;
 };
 
-// DELETE mutation fetcher
+// DELETE
 export const deleteMutationFetcher = async <TResponse, TBody = unknown>(
   url: string,
   { arg }: { arg?: TBody } = { arg: undefined }
@@ -92,7 +108,7 @@ export const deleteMutationFetcher = async <TResponse, TBody = unknown>(
   return response.data;
 };
 
-// FormData mutation fetcher (axios sẽ tự set header multipart/form-data)
+// FormData
 export const formDataMutationFetcher = async <TResponse>(
   url: string,
   { arg }: { arg: FormData }
@@ -101,7 +117,7 @@ export const formDataMutationFetcher = async <TResponse>(
   return response.data;
 };
 
-// Generic mutation fetcher
+// Generic
 export const genericMutationFetcher = async <TResponse, TBody = unknown>(
   url: string,
   {
@@ -123,4 +139,5 @@ export const genericMutationFetcher = async <TResponse, TBody = unknown>(
   });
   return response.data;
 };
+
 export default axiosInstance;
