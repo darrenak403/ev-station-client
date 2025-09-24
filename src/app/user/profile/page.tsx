@@ -4,7 +4,6 @@ import { Input } from "@heroui/react";
 import { MyButton } from "@/components";
 import { Alert } from "@heroui/react";
 import { postMutationFetcher } from "@/lib/fetcher";
-import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/redux/hooks";
 
 interface IdentityCardData {
@@ -26,7 +25,6 @@ interface IdentityCardScanResponse {
 }
 
 export default function ProfilePage() {
-  const router = useRouter();
   const refreshToken = useAppSelector((state) => state.auth.refreshToken);
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const userRole = useAppSelector((state) => state.auth.data?.user?.roleName);
