@@ -10,7 +10,8 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import type { CredentialResponse } from "@react-oauth/google";
 import { useFetchLoginSwrSingleton } from "@/hook/singleton/swrs/useFetchLoginSwr";
-import { useFetchLoginGoogleSingleton } from "@/hook/singleton/swrs/useFetchLoginGoogleSwr"; // Import hook Google
+import { useFetchLoginGoogleSingleton } from "@/hook/singleton/swrs/useFetchLoginGoogleSwr";
+
 
 interface ApiError {
   response?: {
@@ -27,7 +28,6 @@ export function SignIn() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
-
   const { login, loading } = useFetchLoginSwrSingleton();
   const { loginWithGoogle, loading: googleLoading } =
     useFetchLoginGoogleSingleton();
@@ -49,34 +49,45 @@ export function SignIn() {
         .matches(/[0-9]/, "Mật khẩu phải có ít nhất 1 số"),
     }),
     onSubmit: async (values) => {
-      try {
-        const result = await login({
-          email: values.email,
-          password: values.password,
-        });
+  try {
+    const result = await login({
+      email: values.email,
+      password: values.password,
+    });
 
-        if (result.isSuccess) {
-          setAlertMessage(result.message);
-          setAlertColor("success");
-          setShowAlert(true);
-          console.log(result.accessToken);
-          localStorage.setItem("accessToken", result.accessToken);
-          setTimeout(() => {
-            setShowAlert(false);
+    if (result.isSuccess) {
+      setAlertMessage(result.message);
+      setAlertColor("success");
+      setShowAlert(true);
+
+      setTimeout(() => {
+        setShowAlert(false);
+
+        switch (result.data.user?.roleName) {
+          case "Admin":
+            router.push("/admin/dashboard");
+            break;
+          case "Staff":
+            router.push("");
+            break;
+          case "Renter":
+            router.push("/user/profile");
+            break;
+          default:
             router.push("/");
-          }, 2000);
-        } else {
-          setAlertMessage(result.message);
-          setAlertColor("danger");
-          setShowAlert(true);
         }
-      } catch (error) {
-        console.error("Đăng nhập thất bại:", error);
-        setAlertMessage("Đăng nhập thất bại!");
-        setAlertColor("danger");
-        setShowAlert(true);
-        setTimeout(() => setShowAlert(false), 2000);
-      }
+      }, 1000);
+    } else {
+      setAlertMessage(result.message);
+      setAlertColor("danger");
+      setShowAlert(true);
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    setAlertMessage("Đăng nhập thất bại!");
+    setAlertColor("danger");
+    setShowAlert(true);
+  }
     },
   });
 
@@ -91,11 +102,31 @@ export function SignIn() {
       const result = await loginWithGoogle(idToken);
 
       if (result.isSuccess) {
-        showAlertMsg(result.message, "success");
-        setTimeout(() => router.push("/"), 2000);
-      } else {
-        showAlertMsg(result.message, "danger");
-      }
+      setAlertMessage(result.message);
+      setAlertColor("success");
+      setShowAlert(true);
+
+      setTimeout(() => {
+        setShowAlert(false);
+        switch (result.data.user?.roleName) {
+          case "Admin":
+            router.push("/admin/dashboard");
+            break;
+          case "Staff":
+            router.push("");
+            break;
+          case "Renter":
+            router.push("/user/profile");
+            break;
+          default:
+            router.push("/");
+        }
+      }, 1000);
+    } else {
+      setAlertMessage(result.message);
+      setAlertColor("danger");
+      setShowAlert(true);
+    }
     } catch (err: unknown) {
       const apiError = err as ApiError;
       const msg =
@@ -233,7 +264,11 @@ export function SignIn() {
                   onError={() =>
                     showAlertMsg("Lỗi đăng nhập Google!", "danger")
                   }
-                  width="100%"
+                  theme="outline"
+                  size="large"
+                  text="signin_with"
+                  shape="rectangular"
+                  logo_alignment="left"
                 />
               )}
               <div className="text-center mt-4">

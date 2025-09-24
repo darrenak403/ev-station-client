@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -13,20 +13,30 @@ import {
 import { ThemeToggle } from "../../modules/SwithTheme/theme-toggle";
 import { MyButton } from "../../styled";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { clearAuth } from "@/redux/slices/authSlice";
+import { RootState } from "@/redux/store";
 
 export function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
+  
+  // ✅ Lấy auth state từ Redux
+  const authState = useSelector((state: RootState) => state.auth);
+  const isLoggedIn = !!(authState.accessToken || authState.refreshToken);
+  const userId = authState.data?.user?.id;
+  const userRole = authState.data?.user?.roleName;
+  const userFullName = authState.data?.user?.fullName;
 
-  useEffect(() => {
-    // Check if accessToken exists in localStorage
-    const token = localStorage.getItem("accessToken");
-    setIsLoggedIn(!!token);
-  }, []);
- 
+  console.log("Header - Auth Info:", {
+    isLoggedIn,
+    userId,
+    userRole,
+    userFullName,
+  });
+
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    setIsLoggedIn(false);
+    dispatch(clearAuth());
     router.push("/auth/sign-in");
   };
 
@@ -80,18 +90,49 @@ export function Header() {
         </NavbarItem>
         
         {isLoggedIn ? (
-          <NavbarItem>
-            <MyButton 
-              variant="bordered" 
-              size="sm" 
-              onPress={handleLogout}
-              kind="red"
-              shape="pill"
-              variantKind="solid"
-            >
-              Đăng xuất
-            </MyButton>
-          </NavbarItem>
+          <>
+            {/* Hiển thị tên user nếu có */}
+            {userFullName && (
+              <NavbarItem className="hidden md:flex">
+                <span className="text-sm text-foreground-600">
+                  Xin chào, {userFullName}
+                </span>
+              </NavbarItem>
+            )}
+            
+            {/* Nút profile theo role */}
+            <NavbarItem className="hidden md:flex">
+              <Link href={
+                userRole === "Admin" ? "/admin/dashboard" :
+                userRole === "Teacher" ? "/teacher" :
+                userRole === "Renter" ? "/user/profile" :
+                "/"
+              }>
+                <MyButton 
+                  kind="primary"
+                  size="sm"
+                  variantKind="outline"
+                  shape="pill"
+                >
+                  Profile
+                </MyButton>
+              </Link>
+            </NavbarItem>
+            
+            {/* Nút logout */}
+            <NavbarItem>
+              <MyButton 
+                variant="bordered" 
+                size="sm" 
+                onPress={handleLogout}
+                kind="red"
+                shape="pill"
+                variantKind="solid"
+              >
+                Đăng xuất
+              </MyButton>
+            </NavbarItem>
+          </>
         ) : (
           <NavbarItem>
             <Link href="/auth/sign-in">
@@ -130,17 +171,35 @@ export function Header() {
           </Link>
         </NavbarMenuItem>
         
-        {/* Mobile menu auth button */}
+        {/* Mobile menu */}
         <NavbarMenuItem>
           {isLoggedIn ? (
-            <MyButton 
-              variant="bordered" 
-              size="sm" 
-              onPress={handleLogout}
-              className="w-full"
-            >
-              Đăng xuất
-            </MyButton>
+            <>
+              {userFullName && (
+                <div className="text-sm text-foreground-600 mb-2">
+                  Xin chào, {userFullName}
+                </div>
+              )}
+              <Link href={
+                userRole === "Admin" ? "/admin/dashboard" :
+                userRole === "Teacher" ? "/teacher" :
+                userRole === "Renter" ? "/user/profile" :
+                "/"
+              } className="w-full mb-2 block">
+                <MyButton as="button" variant="bordered" size="sm" kind="primary" className="w-full">
+                  Profile
+                </MyButton>
+              </Link>
+              <MyButton 
+                variant="bordered" 
+                size="sm" 
+                onPress={handleLogout}
+                className="w-full"
+                kind="red"
+              >
+                Đăng xuất
+              </MyButton>
+            </>
           ) : (
             <Link href="/auth/sign-in" className="w-full">
               <MyButton as="a" variant="bordered" size="sm" kind="primary" className="w-full">

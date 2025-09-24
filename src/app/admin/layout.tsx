@@ -6,7 +6,7 @@ const UserLayout = ({children}: {children: React.ReactNode}) => {
   return (
     <div>   
       <Header/>
-      <ProtectedRoute allowedRoles={["Renter"]}>
+      <ProtectedRoute allowedRoles={["Admin"]}>
         <main>{children}</main>  
       </ProtectedRoute>
       <Footer/>
