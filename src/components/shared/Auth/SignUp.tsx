@@ -8,18 +8,7 @@ import { MyButton } from "../../styled";
 import Link from "next/link";
 import { postMutationFetcher } from "@/lib/fetcher";
 import { useRouter } from "next/navigation";
-
-interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-interface AuthResponse {
-  token: string;
-  user?: unknown;
-  message: string;
-  isSuccess: boolean;
-}
+import { useFetchRegisterSwrSingleton } from "@/hook/singleton/swrs/useFetchRegisterSwr";
 
 export function SignUp() {
   const router = useRouter();
@@ -27,6 +16,7 @@ export function SignUp() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
+  const { register, loading } = useFetchRegisterSwrSingleton();
 
   const formik = useFormik({
     initialValues: {
@@ -50,34 +40,21 @@ export function SignUp() {
     }),
     onSubmit: async (values) => {
       try {
-        const result = await postMutationFetcher<AuthResponse, LoginRequest>(
-          "/api/v1/auth/register",
-          {
-            arg: {
-              email: values.email,
-              password: values.password,
-            },
-          }
-        );
-        console.log(result.message);
-
-        if (result.message === "Email is already in use.") {
-          setAlertMessage("Email đã được sử dụng!");
-          setAlertColor("danger");
-          setShowAlert(true);
-          return;
-        }
-
+        const result = await register({
+          email: values.email,
+          password: values.password,
+        });
         if (result.isSuccess) {
-          //localStorage.setItem("accessToken", result.token);
-          setAlertMessage("Đăng ký thành công! Bạn có thể đăng nhập!");
+          setAlertMessage(result.message);
           setAlertColor("success");
           setShowAlert(true);
-
           setTimeout(() => {
-            setShowAlert(false);
             router.push("/auth/sign-in");
-          }, 1000);
+          }, 1500);
+        } else {
+          setAlertMessage(result.message || "Đăng ký thất bại!");
+          setAlertColor("danger");
+          setShowAlert(true);
         }
       } catch (error) {
         console.error("Đăng ký thất bại:", error);
@@ -192,11 +169,17 @@ export function SignUp() {
                 />
                 <MyButton
                   isLoading={formik.isSubmitting}
-                  isDisabled={!formik.isValid}
+                  isDisabled={
+                    !formik.isValid ||
+                    !formik.values.email ||
+                    !formik.values.password ||
+                    !formik.values.confirmPassword
+                  }
                   onPress={() => formik.submitForm()}
                   kind="primary"
                   className="w-full mt-3 h-12 text-base font-semibold"
                   size="md"
+                  shape="pill"
                 >
                   Đăng ký
                 </MyButton>
