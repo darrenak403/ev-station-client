@@ -28,7 +28,7 @@ export function SignIn() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
-  const { login, loading } = useFetchLoginSwrSingleton();
+  const { login } = useFetchLoginSwrSingleton();
   const { loginWithGoogle, loading: googleLoading } =
     useFetchLoginGoogleSingleton();
 

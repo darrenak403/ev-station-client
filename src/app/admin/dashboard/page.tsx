@@ -1,9 +1,12 @@
+"use client";
 import React from 'react'
+import { useAppSelector } from '@/redux/hooks';
 
-const page = () => {
+export default function AdminDashboardPage() {
+  const fullName = useAppSelector((state) => state.auth.data?.user?.fullName);
+
   return (
-    <div>hihi hoho nha</div>
+    <div>Welcome to the admin dashboard, {fullName}!</div>
   )
 }
 
-export default page
