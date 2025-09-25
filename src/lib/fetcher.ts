@@ -25,7 +25,17 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
-    const originalRequest = error.config;
+    const originalRequest = error?.config;
+
+    // safety guard
+    if (!originalRequest) return Promise.reject(error);
+
+    // if this is the refresh-token request itself, don't try to refresh again
+    if (originalRequest.url?.includes("/api/v1/auth/refresh-token")) {
+      console.warn("Refresh token request failed:", error);
+      store.dispatch(clearAuth());
+      return Promise.reject(error);
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -33,15 +43,19 @@ axiosInstance.interceptors.response.use(
       const refreshToken = store.getState().auth.refreshToken;
       if (refreshToken) {
         try {
-          const { data } = await axios.post(`${baseURL}/api/v1/auth/refresh-token`, {
-            refreshToken,
-          });
+          const { data } = await axios.post(
+            `${baseURL}/api/v1/auth/refresh-token`,
+            { refreshToken },
+            { headers: { "x-skip-refresh": "1" } } 
+          );
 
           if (data?.accessToken) {
             store.dispatch(setAccessToken(data.accessToken));
 
+            originalRequest.headers = originalRequest.headers || {};
             originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-            return axiosInstance(originalRequest); 
+
+            return axiosInstance(originalRequest);
           }
         } catch (refreshError) {
           console.error("Refresh token thất bại:", refreshError);
@@ -49,7 +63,9 @@ axiosInstance.interceptors.response.use(
       }
 
       store.dispatch(clearAuth());
-      if (typeof window !== "undefined") window.location.href = "/auth/sign-in";
+      if (typeof window !== "undefined" && window.location.pathname !== "/auth/sign-in") {
+        window.location.href = "/auth/sign-in";
+      }
     }
 
     return Promise.reject(error);
