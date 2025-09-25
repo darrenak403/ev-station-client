@@ -89,9 +89,9 @@ export function Header() {
         <NavbarContent justify="center" className="flex gap-6">
           <NavbarItem>
             <Link
-              href="/about"
+              href="/info/aboutUs"
               className={
-                isActive("/about") ? activeClass(baseLinkClass) : baseLinkClass
+                isActive("/info/aboutUs") ? activeClass(baseLinkClass) : baseLinkClass
               }
             >
               Về Chúng Tôi
@@ -99,9 +99,9 @@ export function Header() {
           </NavbarItem>
           <NavbarItem>
             <Link
-              href="/contact"
+              href="/info/contact"
               className={
-                isActive("/contact") ? activeClass(baseLinkClass) : baseLinkClass
+                isActive("/info/contact") ? activeClass(baseLinkClass) : baseLinkClass
               }
             >
               Liên Hệ
@@ -113,9 +113,9 @@ export function Header() {
             <>
               <NavbarItem>
                 <Link
-                  href="/booking"
+                  href="/bookingCar"
                   className={
-                    isActive("/booking") ? activeClass(baseLinkClass) : baseLinkClass
+                    isActive("/bookingCar") ? activeClass(baseLinkClass) : baseLinkClass
                   }
                 >
                   Đặt Xe
@@ -123,9 +123,9 @@ export function Header() {
               </NavbarItem>
               <NavbarItem>
                 <Link
-                  href="/user/trips"
+                  href="/historyBooking"
                   className={
-                    isActive("/user/trips") ? activeClass(baseLinkClass) : baseLinkClass
+                    isActive("/historyBooking") ? activeClass(baseLinkClass) : baseLinkClass
                   }
                 >
                   Chuyến Xe Của Tôi
@@ -140,42 +140,52 @@ export function Header() {
         <NavbarContent justify="center" className="flex gap-6">
           <NavbarItem>
             <Link
-              href="#"
+              href="/staff/dashboard"
               className={
-                isActive("#") ? activeClass(baseLinkClass) : baseLinkClass
+                isActive("/staff/dashboard") ? activeClass(baseLinkClass) : baseLinkClass
               }
             >
-              Quản Lý Đặt Xe
+              Thống Kê
             </Link>
           </NavbarItem>
           <NavbarItem>
             <Link
-              href="#"
+              href="/staff/verifyCustomer"
               className={
-                isActive("#") ? activeClass(baseLinkClass) : baseLinkClass
+                isActive("/staff/verifyCustomer") ? activeClass(baseLinkClass) : baseLinkClass
               }
             >
-              Quản Lý Xe
+                Xác Thực KH
             </Link>
           </NavbarItem>
           <NavbarItem>
             <Link
-              href=""
+              href="/staff/stationCar"
               className={
-                isActive("") ? activeClass(baseLinkClass) : baseLinkClass
+                isActive("/staff/stationCar") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Quản Lý Xe Tại Điểm
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href="/staff/handovers"
+              className={
+                isActive("/staff/handovers") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Giao - Nhận Xe
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href="/staff/payments"
+              className={
+                isActive("/staff/payments") ? activeClass(baseLinkClass) : baseLinkClass
               }
             >
               Quản Lý Thanh Toán
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link
-              href=""
-              className={
-                isActive("") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
-              Quản Lý Khách Hàng
             </Link>
           </NavbarItem>
           <NavbarItem> |</NavbarItem>
@@ -206,22 +216,22 @@ export function Header() {
           </NavbarItem>
           <NavbarItem>
             <Link
-              href="/admin/vehicles"
+              href="/admin/fleet"
               className={
-                isActive("/admin/vehicles") ? activeClass(baseLinkClass) : baseLinkClass
+                isActive("/admin/fleet") ? activeClass(baseLinkClass) : baseLinkClass
               }
             >
-              Quản Lý Xe
+              Quản Lý Xe & Điểm Thuê
             </Link>
-          </NavbarItem>
+          </NavbarItem>   
           <NavbarItem>
             <Link
-              href="/admin/locations"
+              href="/admin/forcast"
               className={
-                isActive("/admin/locations") ? activeClass(baseLinkClass) : baseLinkClass
+                isActive("/admin/forcast") ? activeClass(baseLinkClass) : baseLinkClass
               }
             >
-              Quản Lý Điểm Thuê
+              Dự Báo
             </Link>
           </NavbarItem>
           <NavbarItem className="ml-30"> |</NavbarItem>
