@@ -6,15 +6,13 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { ThemeToggle } from "../../modules/SwithTheme/theme-toggle";
 import { useRouter, usePathname } from "next/navigation";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { clearAuth } from "@/redux/slices/authSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Header() {
   const router = useRouter();
   const pathname = usePathname() ?? "/";
-  const dispatch = useDispatch();
   const authState = useSelector((state: RootState) => state.auth);
   const accessToken = authState.accessToken;
   const isLoggedIn = !!accessToken;
@@ -23,11 +21,6 @@ export function Header() {
   const role = user?.roleName;
 
   const goProfile = () => router.push("/profile");
-
-  const handleLogout = () => {
-    dispatch(clearAuth());
-    router.push("/");
-  };
 
   const [accountOpen, setAccountOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -56,7 +49,11 @@ export function Header() {
   const isActive = (href: string) => {
     if (!href) return false;
     if (href === "/") return pathname === "/";
-    return pathname === href || pathname.startsWith(href + "/") || pathname.startsWith(href);
+    return (
+      pathname === href ||
+      pathname.startsWith(href + "/") ||
+      pathname.startsWith(href)
+    );
   };
 
   const baseLinkClass =
@@ -64,10 +61,15 @@ export function Header() {
   const baseLinkClassSm =
     "font-semibold text-sm text-foreground-600 hover:text-green-600";
   const activeClass = (sizeClass: string) =>
-    sizeClass.replace("text-foreground-600", "text-green-600").replace("hover:text-green-600", "text-green-600");
+    sizeClass
+      .replace("text-foreground-600", "text-green-600")
+      .replace("hover:text-green-600", "text-green-600");
 
   return (
-    <Navbar isBordered className="bg-white/95 backdrop-blur py-0 px-6 dark:bg-slate-900">
+    <Navbar
+      isBordered
+      className="bg-white/95 backdrop-blur py-0 px-6 dark:bg-slate-900"
+    >
       {role !== "Admin" && role !== "Staff" && (
         <NavbarContent justify="start" className="pl-0">
           <NavbarBrand>
@@ -88,23 +90,59 @@ export function Header() {
       {role !== "Staff" && role !== "Admin" && (
         <NavbarContent justify="center" className="flex gap-6">
           <NavbarItem>
-            <Link
-              href="/info/aboutUs"
-              className={
-                isActive("/info/aboutUs") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
-              Về Chúng Tôi
+            <Link href="/info/aboutUs" className="relative">
+              <motion.span
+                className={
+                  isActive("/info/aboutUs")
+                    ? activeClass(baseLinkClass)
+                    : baseLinkClass
+                }
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                Về Chúng Tôi
+              </motion.span>
+              <AnimatePresence>
+                {isActive("/info/aboutUs") && (
+                  <motion.span
+                    layoutId="header-underline"
+                    className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+              </AnimatePresence>
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link
-              href="/info/contact"
-              className={
-                isActive("/info/contact") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
-              Liên Hệ
+            <Link href="/info/contact" className="relative">
+              <motion.span
+                className={
+                  isActive("/info/contact")
+                    ? activeClass(baseLinkClass)
+                    : baseLinkClass
+                }
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                Liên Hệ
+              </motion.span>
+              <AnimatePresence>
+                {isActive("/info/contact") && (
+                  <motion.span
+                    layoutId="header-underline"
+                    className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+              </AnimatePresence>
             </Link>
           </NavbarItem>
           {!isLoggedIn && <NavbarItem>|</NavbarItem>}
@@ -112,26 +150,70 @@ export function Header() {
           {isLoggedIn && (
             <>
               <NavbarItem>
-                <Link
-                  href="/bookingCar"
-                  className={
-                    isActive("/bookingCar") ? activeClass(baseLinkClass) : baseLinkClass
-                  }
-                >
-                  Đặt Xe
+                <Link href="/bookingCar" className="relative">
+                  <motion.span
+                    className={
+                      isActive("/bookingCar")
+                        ? activeClass(baseLinkClass)
+                        : baseLinkClass
+                    }
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                  >
+                    Đặt Xe
+                  </motion.span>
+                  <AnimatePresence>
+                    {isActive("/bookingCar") && (
+                      <motion.span
+                        layoutId="header-underline"
+                        className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 6 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 25,
+                        }}
+                      />
+                    )}
+                  </AnimatePresence>
                 </Link>
               </NavbarItem>
               <NavbarItem>
-                <Link
-                  href="/historyBooking"
-                  className={
-                    isActive("/historyBooking") ? activeClass(baseLinkClass) : baseLinkClass
-                  }
-                >
-                  Chuyến Xe Của Tôi
+                <Link href="/historyBooking" className="relative">
+                  <motion.span
+                    className={
+                      isActive("/historyBooking")
+                        ? activeClass(baseLinkClass)
+                        : baseLinkClass
+                    }
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                  >
+                    Chuyến Xe Của Tôi
+                  </motion.span>
+                  <AnimatePresence>
+                    {isActive("/historyBooking") && (
+                      <motion.span
+                        layoutId="header-underline"
+                        className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 6 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 25,
+                        }}
+                      />
+                    )}
+                  </AnimatePresence>
                 </Link>
               </NavbarItem>
-              <NavbarItem> |</NavbarItem>
+              <NavbarItem>|</NavbarItem>
             </>
           )}
         </NavbarContent>
@@ -139,102 +221,270 @@ export function Header() {
       {role === "Staff" && isLoggedIn && (
         <NavbarContent justify="center" className="flex gap-6">
           <NavbarItem>
-            <Link
-              href="/staff/dashboard"
-              className={
-                isActive("/staff/dashboard") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
-              Thống Kê
+            <Link href="/staff/dashboard" className="relative">
+              <motion.span
+                className={
+                  isActive("/staff/dashboard")
+                    ? activeClass(baseLinkClass)
+                    : baseLinkClass
+                }
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                Thống Kê
+              </motion.span>
+              <AnimatePresence>
+                {isActive("/staff/dashboard") && (
+                  <motion.span
+                    layoutId="header-underline"
+                    className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+              </AnimatePresence>
             </Link>
           </NavbarItem>
+
           <NavbarItem>
-            <Link
-              href="/staff/verifyCustomer"
-              className={
-                isActive("/staff/verifyCustomer") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
+            <Link href="/staff/verifyCustomer" className="relative">
+              <motion.span
+                className={
+                  isActive("/staff/verifyCustomer")
+                    ? activeClass(baseLinkClass)
+                    : baseLinkClass
+                }
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
                 Xác Thực KH
+              </motion.span>
+              <AnimatePresence>
+                {isActive("/staff/verifyCustomer") && (
+                  <motion.span
+                    layoutId="header-underline"
+                    className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+              </AnimatePresence>
             </Link>
           </NavbarItem>
+
           <NavbarItem>
-            <Link
-              href="/staff/stationCar"
-              className={
-                isActive("/staff/stationCar") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
-              Quản Lý Xe Tại Điểm
+            <Link href="/staff/stationCar" className="relative">
+              <motion.span
+                className={
+                  isActive("/staff/stationCar")
+                    ? activeClass(baseLinkClass)
+                    : baseLinkClass
+                }
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                Quản Lý Xe Tại Điểm
+              </motion.span>
+              <AnimatePresence>
+                {isActive("/staff/stationCar") && (
+                  <motion.span
+                    layoutId="header-underline"
+                    className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+              </AnimatePresence>
             </Link>
           </NavbarItem>
+
           <NavbarItem>
-            <Link
-              href="/staff/handovers"
-              className={
-                isActive("/staff/handovers") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
-              Giao - Nhận Xe
+            <Link href="/staff/handovers" className="relative">
+              <motion.span
+                className={
+                  isActive("/staff/handovers")
+                    ? activeClass(baseLinkClass)
+                    : baseLinkClass
+                }
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                Giao - Nhận Xe
+              </motion.span>
+              <AnimatePresence>
+                {isActive("/staff/handovers") && (
+                  <motion.span
+                    layoutId="header-underline"
+                    className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+              </AnimatePresence>
             </Link>
           </NavbarItem>
+
           <NavbarItem>
-            <Link
-              href="/staff/payments"
-              className={
-                isActive("/staff/payments") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
-              Quản Lý Thanh Toán
+            <Link href="/staff/payments" className="relative">
+              <motion.span
+                className={
+                  isActive("/staff/payments")
+                    ? activeClass(baseLinkClass)
+                    : baseLinkClass
+                }
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                Quản Lý Thanh Toán
+              </motion.span>
+              <AnimatePresence>
+                {isActive("/staff/payments") && (
+                  <motion.span
+                    layoutId="header-underline"
+                    className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+              </AnimatePresence>
             </Link>
           </NavbarItem>
-          <NavbarItem> |</NavbarItem>
+
+          <NavbarItem > |</NavbarItem>
         </NavbarContent>
       )}
 
       {role === "Admin" && isLoggedIn && (
         <NavbarContent justify="center" className="flex gap-10">
           <NavbarItem className="justify-center">
-            <Link
-              href="/admin/dashboard"
-              className={
-                isActive("/admin/dashboard") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
-              Thống Kê
+            <Link href="/admin/dashboard" className="relative">
+              <motion.span
+                className={
+                  isActive("/admin/dashboard")
+                    ? activeClass(baseLinkClass)
+                    : baseLinkClass
+                }
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                Thống Kê
+              </motion.span>
+              <AnimatePresence>
+                {isActive("/admin/dashboard") && (
+                  <motion.span
+                    layoutId="header-underline"
+                    className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+              </AnimatePresence>
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link
-              href="/admin/manageAccount"
-              className={
-                isActive("/admin/manageAccount") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
-              Quản Lý Tài Khoản
+            <Link href="/admin/manageAccount" className="relative">
+              <motion.span
+                className={
+                  isActive("/admin/manageAccount")
+                    ? activeClass(baseLinkClass)
+                    : baseLinkClass
+                }
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                Quản Lý Tài Khoản
+              </motion.span>
+              <AnimatePresence>
+                {isActive("/admin/manageAccount") && (
+                  <motion.span
+                    layoutId="header-underline"
+                    className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+              </AnimatePresence>
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link
-              href="/admin/fleet"
-              className={
-                isActive("/admin/fleet") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
-              Quản Lý Xe & Điểm Thuê
-            </Link>
-          </NavbarItem>   
-          <NavbarItem>
-            <Link
-              href="/admin/forcast"
-              className={
-                isActive("/admin/forcast") ? activeClass(baseLinkClass) : baseLinkClass
-              }
-            >
-              Dự Báo
+            <Link href="/admin/fleet" className="relative">
+              <motion.span
+                className={
+                  isActive("/admin/fleet")
+                    ? activeClass(baseLinkClass)
+                    : baseLinkClass
+                }
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                Quản Lý Xe & Điểm Thuê
+              </motion.span>
+              <AnimatePresence>
+                {isActive("/admin/fleet") && (
+                  <motion.span
+                    layoutId="header-underline"
+                    className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+              </AnimatePresence>
             </Link>
           </NavbarItem>
-          <NavbarItem className="ml-30"> |</NavbarItem>
+          <NavbarItem>
+            <Link href="/admin/forcast" className="relative">
+              <motion.span
+                className={
+                  isActive("/admin/forcast")
+                    ? activeClass(baseLinkClass)
+                    : baseLinkClass
+                }
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                Gợi ý nâng cấp đội xe bằng AI
+              </motion.span>
+              <AnimatePresence>
+                {isActive("/admin/forcast") && (
+                  <motion.span
+                    layoutId="header-underline"
+                    className="absolute left-0 right-0 bottom-[-6px] h-1 rounded-full bg-green-600"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+              </AnimatePresence>
+            </Link>
+          </NavbarItem>
+
+          <NavbarItem> |</NavbarItem>
         </NavbarContent>
       )}
 
@@ -246,7 +496,9 @@ export function Header() {
               <Link
                 href="/auth/sign-up"
                 className={
-                  isActive("/auth/sign-up") ? activeClass(baseLinkClassSm) : baseLinkClassSm
+                  isActive("/auth/sign-up")
+                    ? activeClass(baseLinkClassSm)
+                    : baseLinkClassSm
                 }
               >
                 Đăng Ký
@@ -254,7 +506,13 @@ export function Header() {
             </NavbarItem>
             <NavbarItem>
               <Link href="/auth/sign-in">
-                <button className={`cursor-pointer font-semibold px-4 py-1 rounded-md border border-foreground-800 text-1xl hover:bg-green-500 hover:text-white transition ${isActive("/auth/sign-in") ? "bg-transparent text-green-600" : ""}`}>
+                <button
+                  className={`cursor-pointer font-semibold px-4 py-1 rounded-md border border-foreground-800 text-1xl hover:bg-green-500 hover:text-white transition ${
+                    isActive("/auth/sign-in")
+                      ? "bg-transparent text-green-600"
+                      : ""
+                  }`}
+                >
                   Đăng nhập
                 </button>
               </Link>
@@ -311,13 +569,15 @@ export function Header() {
 
             <NavbarItem>
               <div className="flex items-center gap-2 relative">
-                <button
+                <motion.button
                   onClick={() => {
                     setAccountOpen((s) => !s);
                     setNotifOpen(false);
                   }}
                   className="flex items-center gap-3 rounded-md p-2 w-12"
                   title="Tài khoản"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   {avatarUrl ? (
                     <Image
@@ -333,10 +593,14 @@ export function Header() {
                     </div>
                   )}
 
-                  <span className="relative cursor-pointer inline-flex items-center justify-center h-5 w-5 rounded-full bg-gray-100 border border-gray-200 text-gray-600 top-4 left-8">
+                  <motion.span
+                    className="relative cursor-pointer inline-flex items-center justify-center h-5 w-5 rounded-full bg-gray-100 border border-gray-200 text-gray-600 top-4 left-8"
+                    animate={{ rotate: accountOpen ? 180 : 0 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  >
                     <Icon icon="mdi:chevron-down" width="18" height="18" />
-                  </span>
-                </button>
+                  </motion.span>
+                </motion.button>
 
                 <AnimatePresence>
                   {accountOpen && (
@@ -371,13 +635,20 @@ export function Header() {
                       </div>
 
                       <div className="flex flex-col p-2 gap-1">
-                        <button
+                        <motion.button
                           onClick={() => {
                             setAccountOpen(false);
                             goProfile();
                           }}
                           className="cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 rounded-md hover:bg-gray-50 text-1xl dark:text-white dark:hover:bg-slate-700"
                           aria-label="Trang cá nhân"
+                          whileHover={{ x: 4 }}
+                          whileTap={{ scale: 0.98 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 20,
+                          }}
                         >
                           <Icon
                             icon="mdi:account-circle-outline"
@@ -385,23 +656,7 @@ export function Header() {
                             height="18"
                           />
                           <span>Trang cá nhân</span>
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setAccountOpen(false);
-                            handleLogout();
-                          }}
-                          className="cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 rounded-md hover:bg-gray-50 text-1xl text-red-600 dark:hover:bg-slate-700"
-                          aria-label="Đăng xuất"
-                        >
-                          <Icon
-                            icon="mdi:logout-variant"
-                            width="18"
-                            height="18"
-                          />
-                          <span>Đăng xuất</span>
-                        </button>
+                        </motion.button>
                       </div>
                     </motion.div>
                   )}
