@@ -4,9 +4,8 @@ import { Alert, Input } from "@heroui/react";
 import { EyeIcon } from "@phosphor-icons/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { MyButton } from "../../styled";
+import { MyButton } from "@/components";
 import Link from "next/link";
-import { postMutationFetcher } from "@/lib/fetcher";
 import { useRouter } from "next/navigation";
 import { useFetchRegisterSwrSingleton } from "@/hook/singleton/swrs/useFetchRegisterSwr";
 
@@ -66,144 +65,133 @@ export function SignUp() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8 ">
-      <div className="flex w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <div className="flex-1 flex items-center justify-center p-10 bg-gray-50">
-          <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-12 bg-green-100">
+      <div className="flex w-full max-w-7xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div className="flex-1 flex items-center justify-center p-16 bg-gray-50">
+          <div className="w-full max-w-xl">
             {showAlert && (
               <Alert
+                hideIconWrapper
                 color={alertColor}
-                className="fixed top-16 right-0 z-50 w-auto max-w-sm"
+                className="fixed top-4 right-4 z-50 w-auto max-w-md"
               >
                 {alertMessage}
               </Alert>
             )}
-            <div className="bg-white rounded-2xl shadow-xl p-8">
-              <h1 className="text-2xl font-bold text-center mb-1 text-gray-900">
+
+            <div className="bg-white rounded-2xl shadow-xl p-12">
+              <h1 className="text-3xl font-bold text-center mb-2 text-gray-900">
                 Đăng ký
               </h1>
-              <p className="text-gray-500 text-center mb-6 text-sm">
+              <p className="text-gray-500 text-center mb-8 text-base">
                 Chào mừng bạn đến với chúng tôi
               </p>
-              <div className="flex flex-col gap-4">
-                <Input
-                  label="Email"
-                  value={formik.values.email}
-                  onValueChange={(value) =>
-                    formik.setFieldValue("email", value)
-                  }
-                  isInvalid={!!formik.errors.email && formik.touched.email}
-                  errorMessage={formik.errors.email}
-                  onBlur={() => formik.setFieldTouched("email")}
-                  size="md"
-                  variant="bordered"
-                  classNames={{
-                    input: "text-sm",
-                    inputWrapper: "h-12",
-                  }}
-                />
-                <Input
-                  className="relative"
-                  label="Mật khẩu"
-                  type={showPassword ? "text" : "password"}
-                  value={formik.values.password}
-                  onValueChange={(value) =>
-                    formik.setFieldValue("password", value)
-                  }
-                  isInvalid={
-                    !!formik.errors.password && formik.touched.password
-                  }
-                  errorMessage={formik.errors.password}
-                  onBlur={() => formik.setFieldTouched("password")}
-                  autoComplete="new-password"
-                  size="md"
-                  variant="bordered"
-                  classNames={{
-                    input: "text-sm",
-                    inputWrapper: "h-12",
-                  }}
-                  endContent={
-                    <EyeIcon
-                      className={`cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 ${
-                        showPassword
-                          ? "text-blue-500"
-                          : "text-gray-400 hover:text-gray-600"
-                      }`}
-                      size={18}
-                      onClick={() => setShowPassword(!showPassword)}
-                    />
-                  }
-                />
-                <Input
-                  className="relative"
-                  label="Xác nhận mật khẩu"
-                  type={showPassword ? "text" : "password"}
-                  value={formik.values.confirmPassword}
-                  onValueChange={(value) =>
-                    formik.setFieldValue("confirmPassword", value)
-                  }
-                  isInvalid={
-                    !!formik.errors.confirmPassword &&
-                    formik.touched.confirmPassword
-                  }
-                  errorMessage={formik.errors.confirmPassword}
-                  onBlur={() => formik.setFieldTouched("confirmPassword")}
-                  autoComplete="new-password"
-                  size="md"
-                  variant="bordered"
-                  classNames={{
-                    input: "text-sm",
-                    inputWrapper: "h-12",
-                  }}
-                  endContent={
-                    <EyeIcon
-                      className={`cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 ${
-                        showPassword
-                          ? "text-blue-500"
-                          : "text-gray-400 hover:text-gray-600"
-                      }`}
-                      size={18}
-                      onClick={() => setShowPassword(!showPassword)}
-                    />
-                  }
-                />
-                <MyButton
-                  isLoading={formik.isSubmitting}
-                  isDisabled={
-                    !formik.isValid ||
-                    !formik.values.email ||
-                    !formik.values.password ||
-                    !formik.values.confirmPassword
-                  }
-                  onPress={() => formik.submitForm()}
-                  kind="primary"
-                  className="w-full mt-3 h-12 text-base font-semibold"
-                  size="md"
-                  shape="pill"
-                >
-                  Đăng ký
-                </MyButton>
-                <div className="text-center mt-4">
-                  <span className="text-gray-600 text-xs">
-                    Đã có tài khoản?{" "}
-                  </span>
-                  <Link
-                    href="/auth/sign-in"
-                    className="text-blue-600 hover:text-blue-800 text-xs font-medium"
+
+              <form onSubmit={formik.handleSubmit}>
+                <div className="flex flex-col gap-6">
+                  <Input
+                    label="Email"
+                    value={formik.values.email}
+                    onValueChange={(value) => formik.setFieldValue("email", value)}
+                    isInvalid={!!formik.errors.email && formik.touched.email}
+                    errorMessage={formik.errors.email}
+                    onBlur={() => formik.setFieldTouched("email")}
+                    autoComplete="email"
+                    size="lg"
+                    variant="bordered"
+                    classNames={{
+                      input: "text-lg",
+                      inputWrapper: "h-16",
+                    }}
+                  />
+
+                  <Input
+                    className="relative"
+                    label="Mật khẩu"
+                    type={showPassword ? "text" : "password"}
+                    value={formik.values.password}
+                    onValueChange={(value) => formik.setFieldValue("password", value)}
+                    isInvalid={!!formik.errors.password && formik.touched.password}
+                    errorMessage={formik.errors.password}
+                    onBlur={() => formik.setFieldTouched("password")}
+                    autoComplete="new-password"
+                    size="lg"
+                    variant="bordered"
+                    classNames={{
+                      input: "text-lg",
+                      inputWrapper: "h-16",
+                    }}
+                    endContent={
+                      <EyeIcon
+                        className={`cursor-pointer absolute right-6 top-1/2 transform -translate-y-1/2 ${
+                          showPassword ? "text-green-600" : "text-gray-400 hover:text-gray-600"
+                        }`}
+                        size={20}
+                        onClick={() => setShowPassword(!showPassword)}
+                      />
+                    }
+                  />
+
+                  <Input
+                    className="relative"
+                    label="Xác nhận mật khẩu"
+                    type={showPassword ? "text" : "password"}
+                    value={formik.values.confirmPassword}
+                    onValueChange={(value) => formik.setFieldValue("confirmPassword", value)}
+                    isInvalid={!!formik.errors.confirmPassword && formik.touched.confirmPassword}
+                    errorMessage={formik.errors.confirmPassword}
+                    onBlur={() => formik.setFieldTouched("confirmPassword")}
+                    autoComplete="new-password"
+                    size="lg"
+                    variant="bordered"
+                    classNames={{
+                      input: "text-lg",
+                      inputWrapper: "h-16",
+                    }}
+                    endContent={
+                      <EyeIcon
+                        className={`cursor-pointer absolute right-6 top-1/2 transform -translate-y-1/2 ${
+                          showPassword ? "text-green-600" : "text-gray-400 hover:text-gray-600"
+                        }`}
+                        size={20}
+                        onClick={() => setShowPassword(!showPassword)}
+                      />
+                    }
+                  />
+
+                  <MyButton
+                    isLoading={formik.isSubmitting || loading}
+                    isDisabled={
+                      !formik.isValid ||
+                      !formik.values.email ||
+                      !formik.values.password ||
+                      !formik.values.confirmPassword
+                    }
+                    onPress={() => formik.submitForm()}
+                    kind="green"
+                    size="lg"
+                    shape="pill"
+                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 text-white"
                   >
-                    Đăng nhập
-                  </Link>
+                    Đăng ký
+                  </MyButton>
+
+                  <div className="text-center mt-2">
+                    <span className="text-gray-600 text-sm">Đã có tài khoản?{" "}</span>
+                    <Link href="/auth/sign-in" className="text-green-700 hover:text-green-900 text-sm font-medium">
+                      Đăng nhập
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
-        <div className="flex-1 bg-blue-500 flex items-center justify-center p-12">
+
+        <div className="flex-1 bg-green-600 flex items-center justify-center p-20">
           <div className="text-center">
-            <h2 className="text-white text-2xl font-bold mb-4">
-              Chào mừng bạn!
-            </h2>
-            <p className="text-blue-100 text-base max-w-md mx-auto">
+            <h2 className="text-white text-4xl font-bold mb-6">Chào mừng!</h2>
+            <p className="text-green-100 text-lg max-w-xl mx-auto">
               Đăng ký để tiếp tục sử dụng dịch vụ của chúng tôi
             </p>
           </div>
