@@ -22,7 +22,7 @@ export function Header() {
   const avatarUrl = user?.avatarUrl;
   const role = user?.roleName;
 
-  const goProfile = () => router.push("/user/profile");
+  const goProfile = () => router.push("/profile");
 
   const handleLogout = () => {
     dispatch(clearAuth());
