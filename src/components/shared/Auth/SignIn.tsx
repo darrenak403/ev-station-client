@@ -12,7 +12,6 @@ import type { CredentialResponse } from "@react-oauth/google";
 import { useFetchLoginSwrSingleton } from "@/hook/singleton/swrs/useFetchLoginSwr";
 import { useFetchLoginGoogleSingleton } from "@/hook/singleton/swrs/useFetchLoginGoogleSwr";
 
-
 interface ApiError {
   response?: {
     data?: {
@@ -49,45 +48,42 @@ export function SignIn() {
         .matches(/[0-9]/, "Mật khẩu phải có ít nhất 1 số"),
     }),
     onSubmit: async (values) => {
-  try {
-    const result = await login({
-      email: values.email,
-      password: values.password,
-    });
+      try {
+        const result = await login({
+          email: values.email,
+          password: values.password,
+        });
 
-    if (result.isSuccess) {
-      setAlertMessage(result.message);
-      setAlertColor("success");
-      setShowAlert(true);
+        if (result.isSuccess) {
+          setAlertMessage(result.message);
+          setAlertColor("success");
+          setShowAlert(true);
+          setShowAlert(false);
 
-      setTimeout(() => {
-        setShowAlert(false);
-
-        switch (result.data.user?.roleName) {
-          case "Admin":
-            router.push("/admin/dashboard");
-            break;
-          case "Staff":
-            router.push("");
-            break;
-          case "Renter":
-            router.push("/user/profile");
-            break;
-          default:
-            router.push("/");
+          switch (result.data.user?.roleName) {
+            case "Admin":
+              router.push("/admin/dashboard");
+              break;
+            case "Staff":
+              router.push("/staff/dashboard");
+              break;
+            case "Renter":
+              router.push("/");
+              break;
+            default:
+              router.push("/");
+          }
+        } else {
+          setAlertMessage(result.message);
+          setAlertColor("danger");
+          setShowAlert(true);
         }
-      }, 1000);
-    } else {
-      setAlertMessage(result.message);
-      setAlertColor("danger");
-      setShowAlert(true);
-    }
-  } catch (error) {
-    console.error("Login error:", error);
-    setAlertMessage("Đăng nhập thất bại!");
-    setAlertColor("danger");
-    setShowAlert(true);
-  }
+      } catch (error) {
+        console.error("Login error:", error);
+        setAlertMessage("Đăng nhập thất bại!");
+        setAlertColor("danger");
+        setShowAlert(true);
+      }
     },
   });
 
@@ -102,31 +98,28 @@ export function SignIn() {
       const result = await loginWithGoogle(idToken);
 
       if (result.isSuccess) {
-      setAlertMessage(result.message);
-      setAlertColor("success");
-      setShowAlert(true);
-
-      setTimeout(() => {
+        setAlertMessage(result.message);
+        setAlertColor("success");
+        setShowAlert(true);
         setShowAlert(false);
         switch (result.data.user?.roleName) {
           case "Admin":
             router.push("/admin/dashboard");
             break;
           case "Staff":
-            router.push("");
+            router.push("/staff/dashboard");
             break;
           case "Renter":
-            router.push("/user/profile");
+            router.push("/");
             break;
           default:
             router.push("/");
         }
-      }, 1000);
-    } else {
-      setAlertMessage(result.message);
-      setAlertColor("danger");
-      setShowAlert(true);
-    }
+      } else {
+        setAlertMessage(result.message);
+        setAlertColor("danger");
+        setShowAlert(true);
+      }
     } catch (err: unknown) {
       const apiError = err as ApiError;
       const msg =
@@ -145,28 +138,28 @@ export function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8 ">
-      <div className="flex w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <div className="flex-1 flex items-center justify-center p-10 bg-gray-50">
-          <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-12 bg-green-100 dark:bg-gray-900">
+      <div className="flex w-full max-w-7xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div className="flex-1 flex items-center justify-center p-16 bg-gray-50 dark:bg-gray-800">
+          <div className="w-full max-w-xl">
             {showAlert && (
               <Alert
                 hideIconWrapper
                 color={alertColor}
-                className="fixed top-1 right-0 z-50 w-auto max-w-sm"
+                className="fixed top-4 right-4 z-50 w-auto max-w-md"
               >
                 {alertMessage}
               </Alert>
             )}
-            <div className="bg-white rounded-2xl shadow-xl p-8">
-              <h1 className="text-2xl font-bold text-center mb-1 text-gray-900">
+            <div className="bg-white rounded-2xl shadow-xl p-12 dark:bg-gray-900">
+              <h1 className="text-3xl font-bold text-center mb-2 text-gray-900 dark:text-white">
                 Đăng nhập
               </h1>
-              <p className="text-gray-500 text-center mb-6 text-sm">
+              <p className="text-gray-500 text-center mb-8 text-base dark:text-gray-400">
                 Chào mừng bạn trở lại
               </p>
               <form onSubmit={formik.handleSubmit}>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-6">
                   <Input
                     label="Email"
                     value={formik.values.email}
@@ -177,11 +170,13 @@ export function SignIn() {
                     errorMessage={formik.errors.email}
                     onBlur={() => formik.setFieldTouched("email")}
                     autoComplete="email"
-                    size="md"
+                    size="lg"
                     variant="bordered"
                     classNames={{
-                      input: "text-sm",
-                      inputWrapper: "h-12",
+                      input: "text-lg",
+                      inputWrapper: "h-16",
+                      label:
+                        "text-lg font-medium text-gray-900 dark:text-gray-100",
                     }}
                   />
                   <Input
@@ -198,20 +193,22 @@ export function SignIn() {
                     errorMessage={formik.errors.password}
                     onBlur={() => formik.setFieldTouched("password")}
                     autoComplete="current-password"
-                    size="md"
+                    size="lg"
                     variant="bordered"
                     classNames={{
-                      input: "text-sm",
-                      inputWrapper: "h-12",
+                      input: "text-lg",
+                      inputWrapper: "h-16",
+                      label:
+                        "text-lg font-medium text-gray-900 dark:text-gray-100",
                     }}
                     endContent={
                       <EyeIcon
-                        className={`cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 ${
+                        className={`cursor-pointer absolute right-6 top-1/2 transform -translate-y-1/2 ${
                           showPassword
-                            ? "text-blue-500"
-                            : "text-gray-400 hover:text-gray-600"
+                            ? "text-green-600"
+                            : "text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-600"
                         }`}
-                        size={18}
+                        size={20}
                         onClick={() => setShowPassword(!showPassword)}
                       />
                     }
@@ -224,60 +221,66 @@ export function SignIn() {
                       !formik.values.email ||
                       !formik.values.password
                     }
-                    kind="primary"
-                    className="w-full mt-3 h-12 text-base font-semibold"
-                    size="md"
+                    kind="green"
+                    size="lg"
                     shape="pill"
+                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 text-white dark:from-green-600 dark:to-green-700 hover:brightness-105 active:brightness-90 transition-all duration-200 dark:text-gray-100"
                   >
                     Đăng nhập
                   </MyButton>
                   <div className="text-center mt-2">
                     <Link
                       href="#"
-                      className="text-blue-600 hover:text-blue-800 text-xs"
+                      className="text-green-700 hover:text-green-900 text-sm dark:text-green-400 dark:hover:text-green-600 font-medium"
                     >
                       Quên mật khẩu?
                     </Link>
                   </div>
                 </div>
               </form>
-              <div className="flex items-center gap-4 my-4">
+              <div className="flex items-center gap-4 my-6">
                 <Divider className="flex-1" />
-                <span className="text-gray-400 text-xs">hoặc</span>
+                <span className="text-gray-400 text-sm dark:text-gray-400">
+                  hoặc
+                </span>
                 <Divider className="flex-1" />
               </div>
               {googleLoading ? (
                 <MyButton
                   isLoading
                   isDisabled
-                  kind="primary"
-                  className="w-full h-12"
-                  size="md"
+                  kind="green"
+                  className="w-full h-14 text-lg border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-300 hover:brightness-95 active:brightness-90 transition-all duration-200"
+                  size="lg"
                   shape="square"
                   variantKind="outline"
                 >
                   Đang đăng nhập Google...
                 </MyButton>
               ) : (
-                <GoogleLogin
-                  onSuccess={handleGoogleLogin}
-                  onError={() =>
-                    showAlertMsg("Lỗi đăng nhập Google!", "danger")
-                  }
-                  theme="outline"
-                  size="large"
-                  text="signin_with"
-                  shape="rectangular"
-                  logo_alignment="left"
-                />
+                <div className="flex gap-4">
+                  <div className="flex-1 dark:text-gray-300">
+                    <GoogleLogin
+                      onSuccess={handleGoogleLogin}
+                      onError={() =>
+                        showAlertMsg("Lỗi đăng nhập Google!", "danger")
+                      }
+                      theme="outline"
+                      size="large"
+                      text="signin_with"
+                      shape="rectangular"
+                      logo_alignment="left"
+                    />
+                  </div>
+                </div>
               )}
-              <div className="text-center mt-4">
-                <span className="text-gray-600 text-xs">
+              <div className="text-center mt-6">
+                <span className="text-gray-600 text-sm dark:text-gray-400">
                   Chưa có tài khoản?{" "}
                 </span>
                 <Link
                   href="/auth/sign-up"
-                  className="text-blue-600 hover:text-blue-800 text-xs font-medium"
+                  className="text-green-700 hover:text-green-900 text-sm font-medium dark:text-green-400 dark:hover:text-green-600"
                 >
                   Đăng ký
                 </Link>
@@ -285,12 +288,12 @@ export function SignIn() {
             </div>
           </div>
         </div>
-        <div className="flex-1 bg-blue-500 flex items-center justify-center p-12">
+        <div className="flex-1 bg-green-600 flex items-center justify-center p-20 dark:bg-green-700">
           <div className="text-center">
-            <h2 className="text-white text-2xl font-bold mb-4">
+            <h2 className="text-white text-4xl font-bold mb-6 dark:text-green-100">
               Chào mừng trở lại!
             </h2>
-            <p className="text-blue-100 text-base max-w-md mx-auto">
+            <p className="text-green-100 text-lg max-w-xl mx-auto dark:text-green-200">
               Đăng nhập để tiếp tục sử dụng dịch vụ của chúng tôi
             </p>
           </div>

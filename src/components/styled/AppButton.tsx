@@ -21,6 +21,10 @@ const buttonVariants = cva(
           "bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 text-white hover:from-red-600 hover:via-yellow-600 hover:to-green-600 focus:ring-blue-400 dark:from-red-600 dark:via-yellow-600 dark:to-green-600 dark:hover:from-red-700 dark:hover:via-yellow-700 dark:hover:to-green-700 dark:focus:ring-blue-500",
         red:
           "bg-red-500 hover:bg-red-600 text-white focus:ring-red-400 dark:bg-red-600 dark:hover:bg-red-700 dark:text-gray-100 dark:focus:ring-red-500",
+        green:
+          "bg-green-500 hover:bg-green-600 text-white focus:ring-green-400 dark:bg-green-600 dark:hover:bg-green-700 dark:text-gray-100 dark:focus:ring-green-500",
+        gray:
+          "bg-gray-500 hover:bg-gray-600 text-white focus:ring-gray-400 dark:bg-gray-600 dark:hover:bg-gray-700 dark:text-gray-100 dark:focus:ring-gray-500",
       },
       size: {
         sm: "px-2 py-1 text-sm",
