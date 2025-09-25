@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import type { CredentialResponse } from "@react-oauth/google";
 import { useFetchLoginSwrSingleton } from "@/hook/singleton/swrs/useFetchLoginSwr";
 import { useFetchLoginGoogleSingleton } from "@/hook/singleton/swrs/useFetchLoginGoogleSwr";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ApiError {
   response?: {
@@ -27,6 +28,7 @@ export function SignIn() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
+  const [processing, setProcessing] = useState(false);
   const { login } = useFetchLoginSwrSingleton();
   const { loginWithGoogle, loading: googleLoading } =
     useFetchLoginGoogleSingleton();
@@ -47,7 +49,11 @@ export function SignIn() {
         .matches(/[a-z]/, "Mật khẩu phải có ít nhất 1 chữ thường")
         .matches(/[0-9]/, "Mật khẩu phải có ít nhất 1 số"),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async (values, { setSubmitting }) => {
+      setProcessing(true);
+      setSubmitting(true);
+      // delay 2s before calling API
+      await new Promise((r) => setTimeout(r, 2000));
       try {
         const result = await login({
           email: values.email,
@@ -58,21 +64,22 @@ export function SignIn() {
           setAlertMessage(result.message);
           setAlertColor("success");
           setShowAlert(true);
-          setShowAlert(false);
-
-          switch (result.data.user?.roleName) {
-            case "Admin":
-              router.push("/admin/dashboard");
-              break;
-            case "Staff":
-              router.push("/staff/dashboard");
-              break;
-            case "Renter":
-              router.push("/");
-              break;
-            default:
-              router.push("/");
-          }
+          setTimeout(() => setShowAlert(false), 2000);
+          setTimeout(() => {
+            switch (result.data.user?.roleName) {
+              case "Admin":
+                router.push("/admin/dashboard");
+                break;
+              case "Staff":
+                router.push("/staff/dashboard");
+                break;
+              case "Renter":
+                router.push("/");
+                break;
+              default:
+                router.push("/");
+            }
+          }, 3000);
         } else {
           setAlertMessage(result.message);
           setAlertColor("danger");
@@ -83,6 +90,9 @@ export function SignIn() {
         setAlertMessage("Đăng nhập thất bại!");
         setAlertColor("danger");
         setShowAlert(true);
+      } finally {
+        setProcessing(false);
+        setSubmitting(false);
       }
     },
   });
@@ -101,20 +111,22 @@ export function SignIn() {
         setAlertMessage(result.message);
         setAlertColor("success");
         setShowAlert(true);
-        setShowAlert(false);
-        switch (result.data.user?.roleName) {
-          case "Admin":
-            router.push("/admin/dashboard");
-            break;
-          case "Staff":
-            router.push("/staff/dashboard");
-            break;
-          case "Renter":
-            router.push("/");
-            break;
-          default:
-            router.push("/");
-        }
+        setTimeout(() => setShowAlert(false), 2000);
+        setTimeout(() => {
+          switch (result.data.user?.roleName) {
+            case "Admin":
+              router.push("/admin/dashboard");
+              break;
+            case "Staff":
+              router.push("/staff/dashboard");
+              break;
+            case "Renter":
+              router.push("/");
+              break;
+            default:
+              router.push("/");
+          }
+        }, 3000);
       } else {
         setAlertMessage(result.message);
         setAlertColor("danger");
@@ -142,16 +154,31 @@ export function SignIn() {
       <div className="flex w-full max-w-7xl bg-white rounded-3xl shadow-2xl overflow-hidden">
         <div className="flex-1 flex items-center justify-center p-16 bg-gray-50 dark:bg-gray-800">
           <div className="w-full max-w-xl">
-            {showAlert && (
-              <Alert
-                hideIconWrapper
-                color={alertColor}
-                className="fixed top-4 right-4 z-50 w-auto max-w-md"
-              >
-                {alertMessage}
-              </Alert>
-            )}
-            <div className="bg-white rounded-2xl shadow-xl p-12 dark:bg-gray-900">
+            <AnimatePresence>
+              {showAlert && (
+                <motion.div
+                  key={alertMessage}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                >
+                  <Alert
+                    hideIconWrapper
+                    color={alertColor}
+                    className="fixed top-4 right-4 z-50 w-auto max-w-md"
+                  >
+                    {alertMessage}
+                  </Alert>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <motion.div
+              initial={{ y: 12, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 260, damping: 24 }}
+              className="bg-white rounded-2xl shadow-xl p-12 dark:bg-gray-900"
+            >
               <h1 className="text-3xl font-bold text-center mb-2 text-gray-900 dark:text-white">
                 Đăng nhập
               </h1>
@@ -213,21 +240,38 @@ export function SignIn() {
                       />
                     }
                   />
-                  <MyButton
-                    type="submit"
-                    isLoading={formik.isSubmitting}
-                    isDisabled={
-                      !formik.isValid ||
-                      !formik.values.email ||
-                      !formik.values.password
-                    }
-                    kind="green"
-                    size="lg"
-                    shape="pill"
-                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 text-white dark:from-green-600 dark:to-green-700 hover:brightness-105 active:brightness-90 transition-all duration-200 dark:text-gray-100"
-                  >
-                    Đăng nhập
-                  </MyButton>
+                  {processing ? (
+                    <MyButton
+                      isDisabled={true}
+                      kind="green"
+                      size="lg"
+                      shape="pill"
+                      className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 text-white dark:from-green-600 dark:to-green-700 hover:brightness-105 active:brightness-90 transition-all duration-200 dark:text-gray-100"
+                    >
+                      Đang Đăng Nhập...
+                    </MyButton>
+                  ) : (
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <MyButton
+                        type="submit"
+                        isLoading={formik.isSubmitting}
+                        isDisabled={
+                          !formik.isValid ||
+                          !formik.values.email ||
+                          !formik.values.password
+                        }
+                        kind="green"
+                        size="lg"
+                        shape="pill"
+                        className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 text-white dark:from-green-600 dark:to-green-700 hover:brightness-105 active:brightness-90 transition-all duration-200 dark:text-gray-100"
+                      >
+                        Đăng nhập
+                      </MyButton>
+                    </motion.div>
+                  )}
                   <div className="text-center mt-2">
                     <Link
                       href="#"
@@ -245,35 +289,51 @@ export function SignIn() {
                 </span>
                 <Divider className="flex-1" />
               </div>
-              {googleLoading ? (
-                <MyButton
-                  isLoading
-                  isDisabled
-                  kind="green"
-                  className="w-full h-14 text-lg border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-300 hover:brightness-95 active:brightness-90 transition-all duration-200"
-                  size="lg"
-                  shape="square"
-                  variantKind="outline"
-                >
-                  Đang đăng nhập Google...
-                </MyButton>
-              ) : (
-                <div className="flex gap-4">
-                  <div className="flex-1 dark:text-gray-300">
-                    <GoogleLogin
-                      onSuccess={handleGoogleLogin}
-                      onError={() =>
-                        showAlertMsg("Lỗi đăng nhập Google!", "danger")
-                      }
-                      theme="outline"
-                      size="large"
-                      text="signin_with"
-                      shape="rectangular"
-                      logo_alignment="left"
-                    />
-                  </div>
+              <div className="flex gap-4">
+                <div className="flex-1 dark:text-gray-300">
+                  <AnimatePresence>
+                    {googleLoading ? (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 6 }}
+                      >
+                        <MyButton
+                          isLoading
+                          isDisabled
+                          kind="green"
+                          className="w-full h-11 text-base border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-300 hover:brightness-95 active:brightness-90 transition-all duration-200 px-3"
+                          size="lg"
+                          shape="square"
+                          variantKind="outline"
+                        >
+                          Đang đăng nhập Google...
+                        </MyButton>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 6 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <GoogleLogin
+                          onSuccess={handleGoogleLogin}
+                          onError={() =>
+                            showAlertMsg("Lỗi đăng nhập Google!", "danger")
+                          }
+                          theme="outline"
+                          size="large"
+                          text="signin_with"
+                          shape="rectangular"
+                          logo_alignment="left"
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              )}
+              </div>
               <div className="text-center mt-6">
                 <span className="text-gray-600 text-sm dark:text-gray-400">
                   Chưa có tài khoản?{" "}
@@ -285,7 +345,7 @@ export function SignIn() {
                   Đăng ký
                 </Link>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
         <div className="flex-1 bg-green-600 flex items-center justify-center p-20 dark:bg-green-700">

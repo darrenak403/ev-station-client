@@ -65,10 +65,10 @@ export function SignUp() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-12 bg-green-100">
+    <div className="min-h-screen flex items-center justify-center p-12 bg-green-100 dark:bg-gray-900">
       <div className="flex w-full max-w-7xl bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <div className="flex-1 flex items-center justify-center p-16 bg-gray-50">
-          <div className="w-full max-w-xl">
+        <div className="flex-1 flex items-center justify-center p-16 bg-gray-50 dark:bg-gray-700">
+          <div className="w-full max-w-xl dark:text-white">
             {showAlert && (
               <Alert
                 hideIconWrapper
@@ -79,16 +79,16 @@ export function SignUp() {
               </Alert>
             )}
 
-            <div className="bg-white rounded-2xl shadow-xl p-12">
-              <h1 className="text-3xl font-bold text-center mb-2 text-gray-900">
+            <div className="bg-white rounded-2xl shadow-xl p-12 dark:bg-slate-800">
+              <h1 className="text-3xl font-bold text-center mb-2 text-gray-900 dark:text-white">
                 Đăng ký
               </h1>
-              <p className="text-gray-500 text-center mb-8 text-base">
+              <p className="text-gray-500 text-center mb-8 text-base dark:text-gray-400">
                 Chào mừng bạn đến với chúng tôi
               </p>
 
               <form onSubmit={formik.handleSubmit}>
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-6 dark:text-white">
                   <Input
                     label="Email"
                     value={formik.values.email}
@@ -101,12 +101,12 @@ export function SignUp() {
                     variant="bordered"
                     classNames={{
                       input: "text-lg",
-                      inputWrapper: "h-16",
+                      inputWrapper: "h-16",             
                     }}
                   />
 
                   <Input
-                    className="relative"
+                    className="relative dark:text-white"
                     label="Mật khẩu"
                     type={showPassword ? "text" : "password"}
                     value={formik.values.password}
@@ -124,7 +124,7 @@ export function SignUp() {
                     endContent={
                       <EyeIcon
                         className={`cursor-pointer absolute right-6 top-1/2 transform -translate-y-1/2 ${
-                          showPassword ? "text-green-600" : "text-gray-400 hover:text-gray-600"
+                          showPassword ? "text-green-600" : "text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-500"
                         }`}
                         size={20}
                         onClick={() => setShowPassword(!showPassword)}
@@ -133,7 +133,7 @@ export function SignUp() {
                   />
 
                   <Input
-                    className="relative"
+                    className="relative dark:text-white"
                     label="Xác nhận mật khẩu"
                     type={showPassword ? "text" : "password"}
                     value={formik.values.confirmPassword}
@@ -171,14 +171,14 @@ export function SignUp() {
                     kind="green"
                     size="lg"
                     shape="pill"
-                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 text-white"
+                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 text-white dark:from-green-600 dark:to-green-700 hover:from-green-600 hover:to-green-700 transition-all duration-300"
                   >
                     Đăng ký
                   </MyButton>
 
                   <div className="text-center mt-2">
-                    <span className="text-gray-600 text-sm">Đã có tài khoản?{" "}</span>
-                    <Link href="/auth/sign-in" className="text-green-700 hover:text-green-900 text-sm font-medium">
+                    <span className="text-gray-600 text-sm dark:text-gray-400">Đã có tài khoản?{" "}</span>
+                    <Link href="/auth/sign-in" className="text-green-700 hover:text-green-900 text-sm font-medium dark:text-green-500 dark:hover:text-green-700">
                       Đăng nhập
                     </Link>
                   </div>
@@ -188,10 +188,10 @@ export function SignUp() {
           </div>
         </div>
 
-        <div className="flex-1 bg-green-600 flex items-center justify-center p-20">
+        <div className="flex-1 bg-green-600 flex items-center justify-center p-20 dark:bg-green-700">
           <div className="text-center">
-            <h2 className="text-white text-4xl font-bold mb-6">Chào mừng!</h2>
-            <p className="text-green-100 text-lg max-w-xl mx-auto">
+            <h2 className="text-white text-4xl font-bold mb-6 dark:text-white">Chào mừng!</h2>
+            <p className="text-green-100 text-lg max-w-xl mx-auto dark:text-green-200">
               Đăng ký để tiếp tục sử dụng dịch vụ của chúng tôi
             </p>
           </div>

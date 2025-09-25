@@ -11,7 +11,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Left Column - Brand & Subscribe */}
           <div className="md:col-span-2">
-            <h1 className="text-6xl font-bold mb-8 gravitas-one-regular">
+            <h1 className="text-5xl font-bold mb-8 gravitas-one-regular">
               THD-Booking
             </h1>
             <div className="max-w-md">

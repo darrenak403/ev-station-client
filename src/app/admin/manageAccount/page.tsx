@@ -157,10 +157,10 @@ export default function ManageAccountTable(): JSX.Element {
   const [users, setUsers] = useState<ApiUser[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // search UI (visual only, giữ logic fetch hiện tại)
   const [query, setQuery] = useState<string>("");
-  const [activeTab, setActiveTab] = useState<"all" | "renter" | "staff" | "admin">("all");
+  const [activeTab, setActiveTab] = useState<
+    "all" | "renter" | "staff" | "admin"
+  >("all");
 
   useEffect(() => {
     let mounted = true;
@@ -279,55 +279,36 @@ export default function ManageAccountTable(): JSX.Element {
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            {/* Search box */}
             <div className="relative w-full sm:w-[60%]">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2">
-                <svg
-                  width={18}
-                  height={18}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden
-                >
-                  <path
-                    d="M21 21l-4.35-4.35"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <circle
-                    cx={11}
-                    cy={11}
-                    r={6}
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 da">
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <circle cx="11" cy="11" r={6} stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </span>
+
               <Input
                 value={query}
-                onChange={(e) =>
-                  setQuery((e as React.ChangeEvent<HTMLInputElement>).target.value)
-                }
+                onChange={(e) => setQuery((e as React.ChangeEvent<HTMLInputElement>).target.value)}
                 placeholder="Search users by name or email..."
-                className="w-full pl-10 pr-10 h-11  dark:bg-slate-800"
+                className="w-full pl-10 pr-12 h-11 rounded-lg dark:bg-slate-900"
               />
+
               {query && (
                 <button
                   type="button"
                   onClick={() => setQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-lg text-red-500 hover:text-red-700 focus:outline-none"
                   aria-label="Clear search"
+                  className="absolute cursor-pointer right-2 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
                 >
-                  ×
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </button>
               )}
             </div>
 
-            {/* Role filter tabs (UI only) — animated with framer-motion */}
             <div className="flex items-center gap-2">
               <motion.button
                 type="button"
@@ -345,7 +326,11 @@ export default function ManageAccountTable(): JSX.Element {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25,
+                      }}
                       className="absolute inset-0 rounded-full bg-gray-100 z-0 "
                     />
                   )}
@@ -369,7 +354,11 @@ export default function ManageAccountTable(): JSX.Element {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25,
+                      }}
                       className="cursor-pointer absolute inset-0 rounded-full bg-emerald-100 z-0 text-1xl font-bold"
                     />
                   )}
@@ -393,7 +382,11 @@ export default function ManageAccountTable(): JSX.Element {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25,
+                      }}
                       className="absolute inset-0 rounded-full bg-sky-100 z-0"
                     />
                   )}
@@ -417,7 +410,11 @@ export default function ManageAccountTable(): JSX.Element {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25,
+                      }}
                       className="absolute inset-0 rounded-full bg-rose-100 z-0"
                     />
                   )}
@@ -430,12 +427,11 @@ export default function ManageAccountTable(): JSX.Element {
         <div className="w-full bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
           <div className="px-6 py-5">
             <div className="flex items-center justify-between mb-4">
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 Tổng:{" "}
-                <span className="font-semibold text-gray-700">{users.length}</span>
-              </div>
-              <div className="text-sm text-gray-500">
-                No actions here — UI only
+                <span className="font-semibold text-gray-700 dark:text-gray-500">
+                  {users.length}
+                </span>
               </div>
             </div>
           </div>
@@ -498,7 +494,10 @@ export default function ManageAccountTable(): JSX.Element {
 
                   const user = item as ApiUser;
                   return (
-                    <TableRow key={user.id} className="h-16 hover:bg-gray-50 dark:hover:bg-slate-800">
+                    <TableRow
+                      key={user.id}
+                      className="h-16 hover:bg-gray-50 dark:hover:bg-slate-800"
+                    >
                       {(columnKey) => (
                         <TableCell className="align-middle py-4 px-4">
                           {renderCell(user, String(columnKey))}
