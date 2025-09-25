@@ -1,214 +1,412 @@
 "use client";
 import Link from "next/link";
-import React from "react";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem,
-} from "@heroui/react";
+import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@heroui/react";
+import { Icon } from "@iconify/react";
 import { ThemeToggle } from "../../modules/SwithTheme/theme-toggle";
-import { MyButton } from "../../styled";
-import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { clearAuth } from "@/redux/slices/authSlice";
+import { useRouter, usePathname } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
+import { clearAuth } from "@/redux/slices/authSlice";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function Header() {
   const router = useRouter();
+  const pathname = usePathname() ?? "/";
   const dispatch = useDispatch();
-  
-  // ✅ Lấy auth state từ Redux
   const authState = useSelector((state: RootState) => state.auth);
-  const isLoggedIn = !!(authState.accessToken || authState.refreshToken);
-  const userId = authState.data?.user?.id;
-  const userRole = authState.data?.user?.roleName;
-  const userFullName = authState.data?.user?.fullName;
+  const accessToken = authState.accessToken;
+  const isLoggedIn = !!accessToken;
+  const user = authState.data?.user;
+  const avatarUrl = user?.avatarUrl;
+  const role = user?.roleName;
 
-  console.log("Header - Auth Info:", {
-    isLoggedIn,
-    userId,
-    userRole,
-    userFullName,
-  });
+  const goProfile = () => router.push("/user/profile");
 
   const handleLogout = () => {
     dispatch(clearAuth());
-    router.push("/auth/sign-in");
+    router.push("/");
   };
 
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      if (!containerRef.current.contains(e.target as Node)) {
+        setAccountOpen(false);
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener("click", onDocClick);
+    return () => document.removeEventListener("click", onDocClick);
+  }, []);
+
+  const panelMotion = {
+    initial: { opacity: 0, y: -6, scale: 0.98 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -6, scale: 0.98 },
+    transition: { duration: 0.14 },
+  };
+
+  // helper to mark active links
+  const isActive = (href: string) => {
+    if (!href) return false;
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(href + "/") || pathname.startsWith(href);
+  };
+
+  const baseLinkClass =
+    "font-semibold text-1xl text-foreground-600 hover:text-green-600";
+  const baseLinkClassSm =
+    "font-semibold text-sm text-foreground-600 hover:text-green-600";
+  const activeClass = (sizeClass: string) =>
+    sizeClass.replace("text-foreground-600", "text-green-600").replace("hover:text-green-600", "text-green-600");
+
   return (
-    <Navbar isBordered className="bg-background/95 backdrop-blur">
-      <NavbarContent>
-        <NavbarBrand>
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
-              <span className="text-xl font-bold text-white">E</span>
-            </div>
-            <span className="text-xl font-bold text-primary">EcoRide</span>
-          </Link>
-        </NavbarBrand>
-      </NavbarContent>
-
-      <NavbarContent className="hidden md:flex gap-6" justify="center">
-        <NavbarItem>
-          <Link href="#" className="text-sm font-medium hover:text-primary transition-colors">
-            Trạm thuê
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="#" className="text-sm font-medium hover:text-primary transition-colors">
-            Xe điện
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="#" className="text-sm font-medium hover:text-primary transition-colors">
-            Cách thức
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="#" className="text-sm font-medium hover:text-primary transition-colors">
-            Giá cả
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
-
-      <NavbarContent justify="end">
-        <NavbarItem className="hidden md:flex">
-          <MyButton 
-            href="#" 
-            kind="primary"
-            size="sm"
-            variantKind="outline"
-            shape="pill"
-          >
-            Tìm trạm
-          </MyButton>
-        </NavbarItem>
-        
-        {isLoggedIn ? (
-          <>
-            {/* Hiển thị tên user nếu có */}
-            {userFullName && (
-              <NavbarItem className="hidden md:flex">
-                <span className="text-sm text-foreground-600">
-                  Xin chào, {userFullName}
+    <Navbar isBordered className="bg-white/95 backdrop-blur py-0 px-6 dark:bg-slate-900">
+      {role !== "Admin" && role !== "Staff" && (
+        <NavbarContent justify="start" className="pl-0">
+          <NavbarBrand>
+            <Link href="/" className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-green-500">
+                <span className="text-lg font-bold text-white">T</span>
+              </div>
+              <div className="flex flex-col leading-none">
+                <span className="text-lg font-semibold text-foreground">
+                  THDV-Booking
                 </span>
-              </NavbarItem>
-            )}
-            
-            {/* Nút profile theo role */}
-            <NavbarItem className="hidden md:flex">
-              <Link href={
-                userRole === "Admin" ? "/admin/dashboard" :
-                userRole === "Teacher" ? "/teacher" :
-                userRole === "Renter" ? "/user/profile" :
-                "/"
-              }>
-                <MyButton 
-                  kind="primary"
-                  size="sm"
-                  variantKind="outline"
-                  shape="pill"
+              </div>
+            </Link>
+          </NavbarBrand>
+        </NavbarContent>
+      )}
+
+      {role !== "Staff" && role !== "Admin" && (
+        <NavbarContent justify="center" className="flex gap-6">
+          <NavbarItem>
+            <Link
+              href="/about"
+              className={
+                isActive("/about") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Về Chúng Tôi
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href="/contact"
+              className={
+                isActive("/contact") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Liên Hệ
+            </Link>
+          </NavbarItem>
+          {!isLoggedIn && <NavbarItem>|</NavbarItem>}
+
+          {isLoggedIn && (
+            <>
+              <NavbarItem>
+                <Link
+                  href="/booking"
+                  className={
+                    isActive("/booking") ? activeClass(baseLinkClass) : baseLinkClass
+                  }
                 >
-                  Profile
-                </MyButton>
+                  Đặt Xe
+                </Link>
+              </NavbarItem>
+              <NavbarItem>
+                <Link
+                  href="/user/trips"
+                  className={
+                    isActive("/user/trips") ? activeClass(baseLinkClass) : baseLinkClass
+                  }
+                >
+                  Chuyến Xe Của Tôi
+                </Link>
+              </NavbarItem>
+              <NavbarItem> |</NavbarItem>
+            </>
+          )}
+        </NavbarContent>
+      )}
+      {role === "Staff" && isLoggedIn && (
+        <NavbarContent justify="center" className="flex gap-6">
+          <NavbarItem>
+            <Link
+              href="#"
+              className={
+                isActive("#") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Quản Lý Đặt Xe
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href="#"
+              className={
+                isActive("#") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Quản Lý Xe
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href=""
+              className={
+                isActive("") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Quản Lý Thanh Toán
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href=""
+              className={
+                isActive("") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Quản Lý Khách Hàng
+            </Link>
+          </NavbarItem>
+          <NavbarItem> |</NavbarItem>
+        </NavbarContent>
+      )}
+
+      {role === "Admin" && isLoggedIn && (
+        <NavbarContent justify="center" className="flex gap-10">
+          <NavbarItem className="justify-center">
+            <Link
+              href="/admin/dashboard"
+              className={
+                isActive("/admin/dashboard") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Thống Kê
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href="/admin/manageAccount"
+              className={
+                isActive("/admin/manageAccount") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Quản Lý Tài Khoản
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href="/admin/vehicles"
+              className={
+                isActive("/admin/vehicles") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Quản Lý Xe
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href="/admin/locations"
+              className={
+                isActive("/admin/locations") ? activeClass(baseLinkClass) : baseLinkClass
+              }
+            >
+              Quản Lý Điểm Thuê
+            </Link>
+          </NavbarItem>
+          <NavbarItem className="ml-30"> |</NavbarItem>
+        </NavbarContent>
+      )}
+
+      {/* right area */}
+      <NavbarContent justify="end" className="flex gap-4 items-center ml-5">
+        {!isLoggedIn ? (
+          <>
+            <NavbarItem>
+              <Link
+                href="/auth/sign-up"
+                className={
+                  isActive("/auth/sign-up") ? activeClass(baseLinkClassSm) : baseLinkClassSm
+                }
+              >
+                Đăng Ký
               </Link>
             </NavbarItem>
-            
-            {/* Nút logout */}
             <NavbarItem>
-              <MyButton 
-                variant="bordered" 
-                size="sm" 
-                onPress={handleLogout}
-                kind="red"
-                shape="pill"
-                variantKind="solid"
-              >
-                Đăng xuất
-              </MyButton>
+              <Link href="/auth/sign-in">
+                <button className={`cursor-pointer font-semibold px-4 py-1 rounded-md border border-foreground-800 text-1xl hover:bg-green-500 hover:text-white transition ${isActive("/auth/sign-in") ? "bg-transparent text-green-600" : ""}`}>
+                  Đăng nhập
+                </button>
+              </Link>
             </NavbarItem>
           </>
         ) : (
-          <NavbarItem>
-            <Link href="/auth/sign-in">
-              <MyButton as="button" kind="primary" size="sm" shape="pill" variantKind="solid">
-                Đăng nhập
-              </MyButton>
-            </Link>
-          </NavbarItem>
-        )}
-        
-        <NavbarItem>
-          <ThemeToggle />
-        </NavbarItem>
-        <NavbarMenuToggle className="md:hidden" />
-      </NavbarContent>
-
-      <NavbarMenu>
-        <NavbarMenuItem>
-          <Link href="#stations" className="w-full">
-            Trạm thuê
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem>
-          <Link href="#vehicles" className="w-full">
-            Xe điện
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem>
-          <Link href="#how-it-works" className="w-full">
-            Cách thức
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem>
-          <Link href="#pricing" className="w-full">
-            Giá cả
-          </Link>
-        </NavbarMenuItem>
-        
-        {/* Mobile menu */}
-        <NavbarMenuItem>
-          {isLoggedIn ? (
-            <>
-              {userFullName && (
-                <div className="text-sm text-foreground-600 mb-2">
-                  Xin chào, {userFullName}
-                </div>
-              )}
-              <Link href={
-                userRole === "Admin" ? "/admin/dashboard" :
-                userRole === "Teacher" ? "/teacher" :
-                userRole === "Renter" ? "/user/profile" :
-                "/"
-              } className="w-full mb-2 block">
-                <MyButton as="button" variant="bordered" size="sm" kind="primary" className="w-full">
-                  Profile
-                </MyButton>
-              </Link>
-              <MyButton 
-                variant="bordered" 
-                size="sm" 
-                onPress={handleLogout}
-                className="w-full"
-                kind="red"
+          <div ref={containerRef} className="flex items-center gap-4">
+            <NavbarItem>
+              <button
+                aria-label="Notifications"
+                onClick={() => {
+                  setNotifOpen((s) => !s);
+                  setAccountOpen(false);
+                }}
+                className="cursor-pointer p-2 rounded-md relative "
+                title="Thông báo"
               >
-                Đăng xuất
-              </MyButton>
-            </>
-          ) : (
-            <Link href="/auth/sign-in" className="w-full">
-              <MyButton as="a" variant="bordered" size="sm" kind="primary" className="w-full">
-                Đăng nhập
-              </MyButton>
-            </Link>
-          )}
-        </NavbarMenuItem>
-      </NavbarMenu>
+                <Icon icon="mdi:bell-outline" width="30" height="30" />
+                <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-medium leading-none text-white bg-red-500 rounded-full">
+                  3
+                </span>
+              </button>
+
+              <AnimatePresence>
+                {notifOpen && (
+                  <motion.div
+                    {...panelMotion}
+                    key="notif"
+                    className="absolute right-5 mt-0 w-80 bg-white shadow-lg rounded-md border z-50 dark:bg-slate-800 dark:border-slate-700"
+                  >
+                    <div className="p-3 border-b">
+                      <div className="font-medium">Thông báo</div>
+                    </div>
+                    <div className="max-h-64 overflow-auto">
+                      <div className="p-3 hover:bg-gray-50 cursor-pointer dark:hover:bg-slate-700">
+                        Không có thông báo mới
+                      </div>
+                    </div>
+                    <div className="p-2 border-t text-center">
+                      <button
+                        className="cursor-pointer text-sm text-green-600 hover:underline dark:text-green-400 font-medium"
+                        onClick={() => {
+                          setNotifOpen(false);
+                          router.push("/notifications");
+                        }}
+                      >
+                        Xem tất cả
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </NavbarItem>
+
+            <NavbarItem>
+              <div className="flex items-center gap-2 relative">
+                <button
+                  onClick={() => {
+                    setAccountOpen((s) => !s);
+                    setNotifOpen(false);
+                  }}
+                  className="flex items-center gap-3 rounded-md p-2 w-12"
+                  title="Tài khoản"
+                >
+                  {avatarUrl ? (
+                    <Image
+                      src={avatarUrl}
+                      alt="avatar"
+                      width={48}
+                      height={48}
+                      className="rounded-full cursor-pointer absolute"
+                    />
+                  ) : (
+                    <div className="rounded-full cursor-pointer absolute h-12 w-12 bg-green-500 flex items-center justify-center text-white font-medium">
+                      {user?.fullName?.split(" ").slice(-1)[0]?.[0] ?? "U"}
+                    </div>
+                  )}
+
+                  <span className="relative cursor-pointer inline-flex items-center justify-center h-5 w-5 rounded-full bg-gray-100 border border-gray-200 text-gray-600 top-4 left-8">
+                    <Icon icon="mdi:chevron-down" width="18" height="18" />
+                  </span>
+                </button>
+
+                <AnimatePresence>
+                  {accountOpen && (
+                    <motion.div
+                      {...panelMotion}
+                      key="account"
+                      className="absolute right-0 top-full mt-2 w-64 bg-white shadow-lg rounded-md border z-50 dark:bg-slate-800 dark:border-slate-700"
+                    >
+                      <div className="flex items-center gap-3 p-3 border-b">
+                        {avatarUrl ? (
+                          <Image
+                            src={avatarUrl}
+                            alt="avatar"
+                            width={40}
+                            height={40}
+                            className="rounded-full"
+                          />
+                        ) : (
+                          <div className="h-10 w-10 rounded-full bg-green-500 flex items-center justify-center text-white font-medium">
+                            {user?.fullName?.split(" ").slice(-1)[0]?.[0] ??
+                              "U"}
+                          </div>
+                        )}
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-md font-semibold truncate">
+                            Hi, {user?.fullName?.split(" ")[0] ?? "User"}!
+                          </span>
+                          <span className="text-sm text-foreground-500 truncate">
+                            {user?.email}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col p-2 gap-1">
+                        <button
+                          onClick={() => {
+                            setAccountOpen(false);
+                            goProfile();
+                          }}
+                          className="cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 rounded-md hover:bg-gray-50 text-1xl dark:text-white dark:hover:bg-slate-700"
+                          aria-label="Trang cá nhân"
+                        >
+                          <Icon
+                            icon="mdi:account-circle-outline"
+                            width="18"
+                            height="18"
+                          />
+                          <span>Trang cá nhân</span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setAccountOpen(false);
+                            handleLogout();
+                          }}
+                          className="cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 rounded-md hover:bg-gray-50 text-1xl text-red-600 dark:hover:bg-slate-700"
+                          aria-label="Đăng xuất"
+                        >
+                          <Icon
+                            icon="mdi:logout-variant"
+                            width="18"
+                            height="18"
+                          />
+                          <span>Đăng xuất</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </NavbarItem>
+          </div>
+        )}
+
+        <NavbarItem>
+          <span className="ml-5">
+            <ThemeToggle />
+          </span>
+        </NavbarItem>
+      </NavbarContent>
     </Navbar>
   );
 }

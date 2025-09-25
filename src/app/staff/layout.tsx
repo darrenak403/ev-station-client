@@ -3,10 +3,10 @@ import ProtectedRoute from "@/libs/ProtectedRoute";
 
 const UserLayout = ({children}: {children: React.ReactNode}) => {
   return (
-    <div>   
-      <ProtectedRoute allowedRoles={["Admin"]}>
+    <div>      
+      <ProtectedRoute allowedRoles={["Staff"]}>
         <main>{children}</main>  
-      </ProtectedRoute>
+      </ProtectedRoute>     
     </div>
   )
 }
