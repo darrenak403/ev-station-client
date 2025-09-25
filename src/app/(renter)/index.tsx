@@ -1,7 +1,7 @@
 import React from 'react'
 import ProtectedRoute from "@/libs/ProtectedRoute";
 
-const UserLayout = ({children}: {children: React.ReactNode}) => {
+const RenterLayout = ({children}: {children: React.ReactNode}) => {
   return (
     <div>   
       <ProtectedRoute allowedRoles={["Renter"]}>
@@ -11,5 +11,5 @@ const UserLayout = ({children}: {children: React.ReactNode}) => {
   )
 }
 
-export default UserLayout
+export default RenterLayout
 
