@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
-import { useDispatch } from "react-redux";
-import { postMutationFetcher } from "@/lib/fetcher";
-import { SwrContext } from "./SwrProvider";
-import { setAuth } from "@/redux/slices/authSlice";
+import {useContext, useState} from "react";
+import {useDispatch} from "react-redux";
+import {postMutationFetcher} from "@/lib/fetcher";
+import {SwrContext} from "../SwrProvider";
+import {setAuth} from "@/redux/slices/authSlice";
 
 export interface LoginRequest {
   email: string;
@@ -20,7 +20,7 @@ export interface AuthResponse {
       fullName: string;
       avatarUrl: string;
     };
-    accessToken: string;    
+    accessToken: string;
     refreshToken: string;
   };
 }
@@ -33,13 +33,13 @@ export const useFetchLoginSwrCore = () => {
     try {
       const result = await postMutationFetcher<AuthResponse, LoginRequest>(
         "/api/v1/auth/login",
-        { arg: payload }
+        {arg: payload}
       );
       console.log("Login API result:", result); // Debug
       if (result.isSuccess) {
         dispatch(
           setAuth({
-            accessToken: result.data.accessToken,     
+            accessToken: result.data.accessToken,
             refreshToken: result.data.refreshToken,
             id: result.data.user.id,
             roleName: result.data.user.roleName,
@@ -48,7 +48,6 @@ export const useFetchLoginSwrCore = () => {
             avatarUrl: result.data.user.avatarUrl,
           })
         );
-
       }
       return result;
     } finally {
@@ -56,10 +55,10 @@ export const useFetchLoginSwrCore = () => {
     }
   };
 
-  return { login, loading };
+  return {login, loading};
 };
 
 export const useFetchLoginSwrSingleton = () => {
-  const { useFetchLoginSwr } = useContext(SwrContext)!;
+  const {useFetchLoginSwr} = useContext(SwrContext)!;
   return useFetchLoginSwr;
 };

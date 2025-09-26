@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
-import { postMutationFetcher } from "@/lib/fetcher";
-import { SwrContext } from "./SwrProvider";
-import { useDispatch } from "react-redux";
-import { setAuth } from "@/redux/slices/authSlice";
+import {useContext, useState} from "react";
+import {postMutationFetcher} from "@/lib/fetcher";
+import {SwrContext} from "../SwrProvider";
+import {useDispatch} from "react-redux";
+import {setAuth} from "@/redux/slices/authSlice";
 
 export interface GoogleLoginRequest {
   idToken: string;
@@ -29,16 +29,18 @@ export function useFetchLoginGoogleSwrCore() {
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
 
-  const loginWithGoogle = async (idToken: string): Promise<GoogleAuthResponse> => {
+  const loginWithGoogle = async (
+    idToken: string
+  ): Promise<GoogleAuthResponse> => {
     setLoading(true);
     setError(null);
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const result = await postMutationFetcher<GoogleAuthResponse, GoogleLoginRequest>(
-        "/api/v1/auth/google-login",
-        { arg: { idToken } }
-      );
+      const result = await postMutationFetcher<
+        GoogleAuthResponse,
+        GoogleLoginRequest
+      >("/api/v1/auth/google-login", {arg: {idToken}});
 
       if (result.isSuccess) {
         dispatch(
@@ -64,12 +66,12 @@ export function useFetchLoginGoogleSwrCore() {
     }
   };
 
-  return { loginWithGoogle, loading, error, setError };
+  return {loginWithGoogle, loading, error, setError};
 }
 
 export const useFetchLoginGoogleSingleton = () => {
   const ctx = useContext(SwrContext);
   if (!ctx) throw new Error("SwrContext not provided");
-  const { useFetchLoginGoogleSwr } = ctx;
+  const {useFetchLoginGoogleSwr} = ctx;
   return useFetchLoginGoogleSwr;
 };

@@ -1,14 +1,14 @@
 "use client";
-import React, { useState } from "react";
-import { Alert, Input } from "@heroui/react";
-import { EyeIcon } from "@phosphor-icons/react";
-import { useFormik } from "formik";
+import React, {useState} from "react";
+import {Alert, Input} from "@heroui/react";
+import {EyeIcon} from "@phosphor-icons/react";
+import {useFormik} from "formik";
 import * as Yup from "yup";
-import { MyButton } from "../../styled";
+import {MyButton} from "../../styled";
 import Link from "next/link";
-import { postMutationFetcher } from "@/lib/fetcher";
-import { useRouter } from "next/navigation";
-import { useFetchRegisterSwrSingleton } from "@/hook/singleton/swrs/useFetchRegisterSwr";
+import {postMutationFetcher} from "@/lib/fetcher";
+import {useRouter} from "next/navigation";
+import {useFetchRegisterSwrSingleton} from "@/hook/singleton/swrs/auth/useFetchRegisterSwr";
 
 export function SignUp() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export function SignUp() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
-  const { register, loading } = useFetchRegisterSwrSingleton();
+  const {register, loading} = useFetchRegisterSwrSingleton();
 
   const formik = useFormik({
     initialValues: {

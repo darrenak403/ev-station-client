@@ -1,4 +1,4 @@
 export * from "./SwrProvider";
-export * from "./useFetchLoginSwr";
-export * from "./useFetchLoginGoogleSwr";
-export * from "./useFetchRegisterSwr";
+export * from "./auth/useFetchLoginSwr";
+export * from "./auth/useFetchLoginGoogleSwr";
+export * from "./auth/useFetchRegisterSwr";

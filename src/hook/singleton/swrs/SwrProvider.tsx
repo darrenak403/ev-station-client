@@ -1,8 +1,8 @@
 import React from "react";
 import {PropsWithChildren, createContext} from "react";
-import { useFetchLoginSwrCore } from "./useFetchLoginSwr";
-import { useFetchLoginGoogleSwrCore } from "./useFetchLoginGoogleSwr";
-import { useFetchRegisterSwrCore } from "./useFetchRegisterSwr";
+import {useFetchLoginSwrCore} from "./auth/useFetchLoginSwr";
+import {useFetchLoginGoogleSwrCore} from "./auth/useFetchLoginGoogleSwr";
+import {useFetchRegisterSwrCore} from "./auth/useFetchRegisterSwr";
 
 export interface SwrContextType {
   useFetchLoginSwr: ReturnType<typeof useFetchLoginSwrCore>;

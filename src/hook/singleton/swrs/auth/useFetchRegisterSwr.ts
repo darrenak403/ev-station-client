@@ -1,7 +1,6 @@
-
-import { postMutationFetcher } from "@/lib/fetcher";
-import { useContext, useState } from "react";
-import { SwrContext } from "./SwrProvider";
+import {postMutationFetcher} from "@/lib/fetcher";
+import {useContext, useState} from "react";
+import {SwrContext} from "../SwrProvider";
 
 export interface RegisterRequest {
   email: string;
@@ -18,16 +17,18 @@ export const useFetchRegisterSwrCore = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const register = async (payload: RegisterRequest): Promise<RegisterAuthResponse> => {
+  const register = async (
+    payload: RegisterRequest
+  ): Promise<RegisterAuthResponse> => {
     setLoading(true);
     setError(null);
     try {
       await new Promise((r) => setTimeout(r, 2000));
 
-      const result = await postMutationFetcher<RegisterAuthResponse, RegisterRequest>(
-        "/api/v1/auth/register",
-        { arg: payload }
-      );
+      const result = await postMutationFetcher<
+        RegisterAuthResponse,
+        RegisterRequest
+      >("/api/v1/auth/register", {arg: payload});
 
       if (result?.isSuccess) {
         //localStorage.setItem("registerSuccessMsg", "Đăng ký thành công! Bạn có thể đăng nhập!");
@@ -44,8 +45,8 @@ export const useFetchRegisterSwrCore = () => {
     }
   };
 
-  return { register, loading, error, setError };
-}
+  return {register, loading, error, setError};
+};
 
 export const useFetchRegisterSwrSingleton = () => {
   const {useFetchRegisterSwr} = useContext(SwrContext)!;

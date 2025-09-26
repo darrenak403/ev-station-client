@@ -1,17 +1,16 @@
 "use client";
-import React, { useState } from "react";
-import { Alert, Input, Divider } from "@heroui/react";
-import { EyeIcon } from "@phosphor-icons/react";
-import { useFormik } from "formik";
-import { MyButton } from "@/components";
-import { GoogleLogin } from "@react-oauth/google";
+import React, {useState} from "react";
+import {Alert, Input, Divider} from "@heroui/react";
+import {EyeIcon} from "@phosphor-icons/react";
+import {useFormik} from "formik";
+import {MyButton} from "@/components";
+import {GoogleLogin} from "@react-oauth/google";
 import Link from "next/link";
 import * as Yup from "yup";
-import { useRouter } from "next/navigation";
-import type { CredentialResponse } from "@react-oauth/google";
-import { useFetchLoginSwrSingleton } from "@/hook/singleton/swrs/useFetchLoginSwr";
-import { useFetchLoginGoogleSingleton } from "@/hook/singleton/swrs/useFetchLoginGoogleSwr";
-
+import {useRouter} from "next/navigation";
+import type {CredentialResponse} from "@react-oauth/google";
+import {useFetchLoginSwrSingleton} from "@/hook/singleton/swrs/auth/useFetchLoginSwr";
+import {useFetchLoginGoogleSingleton} from "@/hook/singleton/swrs/auth/useFetchLoginGoogleSwr";
 
 interface ApiError {
   response?: {
@@ -28,8 +27,8 @@ export function SignIn() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
-  const { login } = useFetchLoginSwrSingleton();
-  const { loginWithGoogle, loading: googleLoading } =
+  const {login} = useFetchLoginSwrSingleton();
+  const {loginWithGoogle, loading: googleLoading} =
     useFetchLoginGoogleSingleton();
 
   const formik = useFormik({
@@ -49,45 +48,45 @@ export function SignIn() {
         .matches(/[0-9]/, "Mật khẩu phải có ít nhất 1 số"),
     }),
     onSubmit: async (values) => {
-  try {
-    const result = await login({
-      email: values.email,
-      password: values.password,
-    });
+      try {
+        const result = await login({
+          email: values.email,
+          password: values.password,
+        });
 
-    if (result.isSuccess) {
-      setAlertMessage(result.message);
-      setAlertColor("success");
-      setShowAlert(true);
+        if (result.isSuccess) {
+          setAlertMessage(result.message);
+          setAlertColor("success");
+          setShowAlert(true);
 
-      setTimeout(() => {
-        setShowAlert(false);
+          setTimeout(() => {
+            setShowAlert(false);
 
-        switch (result.data.user?.roleName) {
-          case "Admin":
-            router.push("/admin/dashboard");
-            break;
-          case "Staff":
-            router.push("");
-            break;
-          case "Renter":
-            router.push("/user/profile");
-            break;
-          default:
-            router.push("/");
+            switch (result.data.user?.roleName) {
+              case "Admin":
+                router.push("/admin/dashboard");
+                break;
+              case "Staff":
+                router.push("");
+                break;
+              case "Renter":
+                router.push("/user/profile");
+                break;
+              default:
+                router.push("/");
+            }
+          }, 1000);
+        } else {
+          setAlertMessage(result.message);
+          setAlertColor("danger");
+          setShowAlert(true);
         }
-      }, 1000);
-    } else {
-      setAlertMessage(result.message);
-      setAlertColor("danger");
-      setShowAlert(true);
-    }
-  } catch (error) {
-    console.error("Login error:", error);
-    setAlertMessage("Đăng nhập thất bại!");
-    setAlertColor("danger");
-    setShowAlert(true);
-  }
+      } catch (error) {
+        console.error("Login error:", error);
+        setAlertMessage("Đăng nhập thất bại!");
+        setAlertColor("danger");
+        setShowAlert(true);
+      }
     },
   });
 
@@ -102,31 +101,31 @@ export function SignIn() {
       const result = await loginWithGoogle(idToken);
 
       if (result.isSuccess) {
-      setAlertMessage(result.message);
-      setAlertColor("success");
-      setShowAlert(true);
+        setAlertMessage(result.message);
+        setAlertColor("success");
+        setShowAlert(true);
 
-      setTimeout(() => {
-        setShowAlert(false);
-        switch (result.data.user?.roleName) {
-          case "Admin":
-            router.push("/admin/dashboard");
-            break;
-          case "Staff":
-            router.push("");
-            break;
-          case "Renter":
-            router.push("/user/profile");
-            break;
-          default:
-            router.push("/");
-        }
-      }, 1000);
-    } else {
-      setAlertMessage(result.message);
-      setAlertColor("danger");
-      setShowAlert(true);
-    }
+        setTimeout(() => {
+          setShowAlert(false);
+          switch (result.data.user?.roleName) {
+            case "Admin":
+              router.push("/admin/dashboard");
+              break;
+            case "Staff":
+              router.push("");
+              break;
+            case "Renter":
+              router.push("/user/profile");
+              break;
+            default:
+              router.push("/");
+          }
+        }, 1000);
+      } else {
+        setAlertMessage(result.message);
+        setAlertColor("danger");
+        setShowAlert(true);
+      }
     } catch (err: unknown) {
       const apiError = err as ApiError;
       const msg =
