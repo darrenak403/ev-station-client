@@ -88,7 +88,7 @@ export function Header() {
       )}
 
       {role !== "Staff" && role !== "Admin" && (
-        <NavbarContent justify="center" className="flex gap-6">
+        <NavbarContent justify="center" className="ml-30 flex gap-6">
           <NavbarItem>
             <Link href="/info/aboutUs" className="relative">
               <motion.span
@@ -213,13 +213,13 @@ export function Header() {
                   </AnimatePresence>
                 </Link>
               </NavbarItem>
-              <NavbarItem>|</NavbarItem>
+              <NavbarItem className="ml-10">|</NavbarItem>
             </>
           )}
         </NavbarContent>
       )}
       {role === "Staff" && isLoggedIn && (
-        <NavbarContent justify="center" className="flex gap-6">
+        <NavbarContent justify="center" className="flex gap-10">
           <NavbarItem>
             <Link href="/staff/dashboard" className="relative">
               <motion.span
