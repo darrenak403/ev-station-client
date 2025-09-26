@@ -52,7 +52,7 @@ export function Sidebar() {
       id: "history",
       href: `${base}/history`,
       icon: CarIcon,
-      label: "Lịch sử thuê xe",
+      label: "Chuyến xe của tôi",
     },
     {
       id: "favourite",
@@ -100,8 +100,8 @@ export function Sidebar() {
                 href={item.href}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors rounded-md ${
                   isActive
-                    ? "bg-green-50 text-green-700 border-l-4 border-green-500"
-                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 hover:dark:bg-gray-700"
+                    ? "bg-green-50 text-green-700 border-l-4 border-green-500 dark:bg-slate-700 dark:text-green-300"
+                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-700 "
                 }`}
               >
                 <Icon className="w-5 h-5" />
