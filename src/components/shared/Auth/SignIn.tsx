@@ -158,15 +158,16 @@ export function SignIn() {
               {showAlert && (
                 <motion.div
                   key={alertMessage}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  className="fixed top-4 right-4 z-50 w-auto max-w-md" 
+                  initial={{ opacity: 0, x: 40 }}  
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 40 }}
+                  transition={{ type: "spring", stiffness: 420, damping: 32 }}
                 >
                   <Alert
                     hideIconWrapper
                     color={alertColor}
-                    className="fixed top-4 right-4 z-50 w-auto max-w-md"
+                    className="shadow-lg" 
                   >
                     {alertMessage}
                   </Alert>

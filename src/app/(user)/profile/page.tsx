@@ -1,9 +1,12 @@
 "use client";
 import React from "react";
-import { AccountInfo } from "@/components";
+import { AccountInfo, IdentifyCard } from "@/components";
 
 export default function ProfilePage() {
     return (
-        <AccountInfo/>
+        <div className="space-y-6">
+            <AccountInfo />
+            <IdentifyCard />
+        </div>
     )
 }
