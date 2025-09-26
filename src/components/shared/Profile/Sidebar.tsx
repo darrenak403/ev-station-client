@@ -80,7 +80,7 @@ export function Sidebar() {
       : allMenuItems.filter((i) => i.id !== "history" && i.id !== "favourite");
 
   return (
-    <div className="w-80">
+    <div className="w-60">
       <h1 className="text-3xl font-bold text-gray-900 mb-8 dark:text-white">
         Xin chào bạn!
       </h1>

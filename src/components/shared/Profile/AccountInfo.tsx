@@ -10,10 +10,11 @@ export function AccountInfo() {
   const avatarUrl = user?.avatarUrl;
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800 w-full">
+    <div className="w-full max-w-3xl xl:max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-semibold dark:text-white">Thông tin tài khoản</h2>
       </div>
+
       <div className="grid md:grid-cols-3 gap-8 p-4">
         <div className="md:col-span-1">
           <div className="text-center">
@@ -32,10 +33,6 @@ export function AccountInfo() {
                 {user?.fullName?.split(" ").slice(-1)[0]?.[0] ?? "U"}
               </div>
             )}
-            {/* <Image
-              className="w-40 h-40 text-large mx-auto mb-4"
-              src={user?.avatarUrl || "/default-avatar.png"}
-            /> */}
             <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white">
               {user?.fullName || "Chưa có"}
             </h3>
