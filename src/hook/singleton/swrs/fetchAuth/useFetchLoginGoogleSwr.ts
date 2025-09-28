@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { postMutationFetcher } from "@/lib/fetcher";
-import { SwrContext } from "./SwrProvider";
+import { SwrContext } from "../SwrProvider";
 import { useDispatch } from "react-redux";
 import { setAuth } from "@/redux/slices/authSlice";
 

@@ -1,11 +1,17 @@
-import React from "react";
+import { Sidebar } from "@/components";
 
-const UserLayout = ({ children }: { children: React.ReactNode }) => {
+const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>   
-      <main>{children}</main>    
+    // pt-24 để nhường chỗ cho header nếu header fixed; max-w-7xl + px-6 để căn với header
+    <div className="min-h-screen pt-24">
+      <div className="max-w-7xl mx-auto px-6 flex gap-8 items-start">
+        <aside className="w-60 ml-30">
+          <Sidebar />
+        </aside>
+        <main className=" p-6 flex-1">{children}</main>
+      </div>
     </div>
   );
 };
 
-export default UserLayout;
+export default ProfileLayout;
