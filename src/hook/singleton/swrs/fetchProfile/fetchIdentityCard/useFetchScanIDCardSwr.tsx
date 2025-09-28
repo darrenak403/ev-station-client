@@ -1,7 +1,6 @@
 import { postMutationFetcher } from "@/lib/fetcher";
 import { useContext, useState } from "react";
-import { useDispatch } from "react-redux";
-import { SwrContext } from "./SwrProvider";
+import { SwrContext } from "../../SwrProvider";
 
 export interface ScanIDCardRequest {
   frontImageUrl: string;
@@ -27,7 +26,6 @@ export interface ScanIDCardResponse {
 export const useFetchScanIDCardSwrCore = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const dispatch = useDispatch();
 
   const scanIDCard = async (payload: ScanIDCardRequest) => {
     setLoading(true);

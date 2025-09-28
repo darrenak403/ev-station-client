@@ -1,6 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { store } from "@/redux/store";
 import { setAccessToken, clearAuth } from "@/redux/slices/authSlice";
+import {useRouter} from "next/navigation";
+
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://localhost:8081";
 
@@ -26,11 +28,10 @@ axiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error?.config;
+    const router = useRouter();
 
-    // safety guard
     if (!originalRequest) return Promise.reject(error);
 
-    // if this is the refresh-token request itself, don't try to refresh again
     if (originalRequest.url?.includes("/api/v1/auth/refresh-token")) {
       console.warn("Refresh token request failed:", error);
       store.dispatch(clearAuth());
@@ -64,7 +65,7 @@ axiosInstance.interceptors.response.use(
 
       store.dispatch(clearAuth());
       if (typeof window !== "undefined" && window.location.pathname !== "/auth/sign-in") {
-        window.location.href = "/auth/sign-in";
+        router.push("/");
       }
     }
 

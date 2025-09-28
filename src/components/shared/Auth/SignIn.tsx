@@ -9,8 +9,8 @@ import Link from "next/link";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import type { CredentialResponse } from "@react-oauth/google";
-import { useFetchLoginSwrSingleton } from "@/hook/singleton/swrs/useFetchLoginSwr";
-import { useFetchLoginGoogleSingleton } from "@/hook/singleton/swrs/useFetchLoginGoogleSwr";
+import { useFetchLoginSwrSingleton } from "@/hook/singleton/swrs/fetchAuth/useFetchLoginSwr";
+import { useFetchLoginGoogleSingleton } from "@/hook/singleton/swrs/fetchAuth/useFetchLoginGoogleSwr";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ApiError {
