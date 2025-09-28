@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import { MyButton } from "@/components";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useFetchRegisterSwrSingleton } from "@/hook/singleton/swrs/useFetchRegisterSwr";
+import { useFetchRegisterSwrSingleton } from "@/hook/singleton/swrs/fetchAuth/useFetchRegisterSwr";
 
 export function SignUp() {
   const router = useRouter();

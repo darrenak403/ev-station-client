@@ -1,6 +1,6 @@
 "use client";
 import { useContext, useState } from "react";
-import { SwrContext } from "./SwrProvider";
+import { SwrContext } from "../SwrProvider";
 import { postMutationFetcher } from "@/lib/fetcher";
 
 export interface UploadImageRequest {

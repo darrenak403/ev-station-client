@@ -1,12 +1,12 @@
 import React from "react";
 import {PropsWithChildren, createContext} from "react";
-import { useFetchLoginSwrCore } from "./useFetchLoginSwr";
-import { useFetchLoginGoogleSwrCore } from "./useFetchLoginGoogleSwr";
-import { useFetchRegisterSwrCore } from "./useFetchRegisterSwr";
-import { useFetchGetAllUsersSwrCore } from "./useFetchGetAllUsersSwr";
-import { useFetchUploadImgCore } from "./useFetchUploadImgSwr";
-import { useFetchScanIDCardSwrCore } from "./useFetchScanIDCardSwr";
-import { useFetchSaveIDCardSwrCore } from "./useFetchSaveIDCardSwr";
+import { useFetchLoginSwrCore } from "./fetchAuth/useFetchLoginSwr";
+import { useFetchLoginGoogleSwrCore } from "./fetchAuth/useFetchLoginGoogleSwr";
+import { useFetchRegisterSwrCore } from "./fetchAuth/useFetchRegisterSwr";
+import { useFetchGetAllUsersSwrCore } from "./fetchManageAccount/useFetchGetAllUsersSwr";
+import { useFetchUploadImgCore } from "./uploadImage/useFetchUploadImgSwr";
+import { useFetchScanIDCardSwrCore } from "./fetchProfile/fetchIdentityCard/useFetchScanIDCardSwr";
+import { useFetchSaveIDCardSwrCore } from "./fetchProfile/fetchIdentityCard/useFetchSaveIDCardSwr";
 
 export interface SwrContextType {
   useFetchLoginSwr: ReturnType<typeof useFetchLoginSwrCore>;

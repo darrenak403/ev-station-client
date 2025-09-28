@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { fetcher } from "@/lib/fetcher";
-import { SwrContext } from "./SwrProvider";
+import { SwrContext } from "../SwrProvider";
 
 export type ApiUser = {
   id: string;

@@ -1,7 +1,7 @@
 
 import { postMutationFetcher } from "@/lib/fetcher";
 import { useContext, useState } from "react";
-import { SwrContext } from "./SwrProvider";
+import { SwrContext } from "../SwrProvider";
 
 export interface RegisterRequest {
   email: string;
