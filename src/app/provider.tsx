@@ -7,6 +7,8 @@ import { ThemeProvider } from "next-themes";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { SwrProvider } from "@/hook";
 import ReduxProvider from "@/redux/Provider";
+import ModalsRoot from "@/components/modules/Modal/ModalRoot";
+import { DiscloresuresProvider } from "@/hook/singleton/disclosures/DiscloresuresProvider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -14,9 +16,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <HeroUIProvider>
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
           <ReduxProvider> 
-            <SwrProvider>
-              {children}
-            </SwrProvider>
+            <DiscloresuresProvider>
+              <SwrProvider>
+                {children}
+                <ModalsRoot />
+              </SwrProvider>
+            </DiscloresuresProvider>
           </ReduxProvider>
         </GoogleOAuthProvider>
       </HeroUIProvider>
