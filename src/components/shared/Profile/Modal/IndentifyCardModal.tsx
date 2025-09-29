@@ -65,12 +65,10 @@ export const IndentifyCardModal: React.FC<Props> = ({
       ]);
       setFrontURL(frontImageUrl);
       setBackURL(backImageUrl);
-      console.log("Uploaded image URLs:", { frontImageUrl, backImageUrl });
       const res = await scanIDCard({
         frontImageUrl: frontImageUrl,
         backImageUrl: backImageUrl,
       });
-      console.log("Scan ID Card result:", res);
       if (res.isSuccess) {
         showAlertMsg("Quét CCCD thành công!", "success");
         formik.setValues({
@@ -138,8 +136,6 @@ export const IndentifyCardModal: React.FC<Props> = ({
     onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true);
       try {
-        console.log("Submitting ID Card values:", values);
-
         const res = await saveIDCard({
           cardNumber: values.cardNumber,
           fullName: values.fullName,
