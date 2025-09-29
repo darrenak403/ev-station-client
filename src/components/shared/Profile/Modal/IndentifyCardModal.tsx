@@ -65,12 +65,10 @@ export const IndentifyCardModal: React.FC<Props> = ({
       ]);
       setFrontURL(frontImageUrl);
       setBackURL(backImageUrl);
-      console.log("Uploaded image URLs:", { frontImageUrl, backImageUrl });
       const res = await scanIDCard({
         frontImageUrl: frontImageUrl,
         backImageUrl: backImageUrl,
       });
-      console.log("Scan ID Card result:", res);
       if (res.isSuccess) {
         showAlertMsg("Quét CCCD thành công!", "success");
         formik.setValues({
@@ -138,9 +136,18 @@ export const IndentifyCardModal: React.FC<Props> = ({
     onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true);
       try {
-        console.log("Submitting ID Card values:", values);
         const res = await saveIDCard({
-          values,
+          cardNumber: values.cardNumber,
+          fullName: values.fullName,
+          sex: values.sex,
+          nationality: values.nationality,
+          dateOfBirth: values.dateOfBirth, 
+          placeOfOrigin: values.placeOfOrigin,
+          placeOfResidence: values.placeOfResidence,
+          createDate: values.createDate,
+          dayOfExpiry: values.dayOfExpiry,
+          frontImagePath: values.frontImageUrl,
+          backImagePath: values.backImageUrl,
         });
         if (res.isSuccess) {
           showAlertMsg("Lưu thông tin CCCD thành công!", "success");
@@ -149,7 +156,7 @@ export const IndentifyCardModal: React.FC<Props> = ({
           showAlertMsg(res.message, "danger");
         }
       } catch (error) {
-        console.error("Save ID Card error:", error);
+        console.error("Save ID Card error:", error.response.data.message);
         showAlertMsg("Lưu thông tin CCCD thất bại!", "danger");
       } finally {
         setSubmitting(false);
@@ -515,7 +522,7 @@ export const IndentifyCardModal: React.FC<Props> = ({
           <MyButton
             kind="green"
             shape="pill"
-            onPress={() => formik.submitForm()} 
+            onPress={() => formik.submitForm()}
             isLoading={formik.isSubmitting}
           >
             Lưu thông tin

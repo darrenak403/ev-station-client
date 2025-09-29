@@ -7,13 +7,13 @@ export interface SaveIDCardRequest {
   fullName: string;
   sex: string;
   nationality: string;
-  dateOfBirth: Date;
+  dateOfBirth: string;
   placeOfOrigin: string;
   placeOfResidence: string;
-  createDate: Date;
-  dayOfExpiry: Date;
-  frontImageUrl: string;
-  backImageUrl: string;
+  createDate: string;
+  dayOfExpiry: string;
+  frontImagePath: string;
+  backImagePath: string;
 }
 
 export interface SaveIDCardResponse {
@@ -31,6 +31,7 @@ export const useFetchSaveIDCardSwrCore = () => {
     setLoading(true);
     setError(null);
     try {
+      console.log("Saving ID Card with payload:", payload);
       const result = await postMutationFetcher<
         SaveIDCardResponse,
         SaveIDCardRequest
