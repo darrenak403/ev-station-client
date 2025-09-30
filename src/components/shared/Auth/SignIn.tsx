@@ -12,6 +12,7 @@ import type { CredentialResponse } from "@react-oauth/google";
 import { useFetchLoginSwrSingleton } from "@/hook/singleton/swrs/fetchAuth/useFetchLoginSwr";
 import { useFetchLoginGoogleSingleton } from "@/hook/singleton/swrs/fetchAuth/useFetchLoginGoogleSwr";
 import { motion, AnimatePresence } from "framer-motion";
+import bscrypt from "bcryptjs";
 
 interface ApiError {
   response?: {
@@ -52,12 +53,14 @@ export function SignIn() {
     onSubmit: async (values, { setSubmitting }) => {
       setProcessing(true);
       setSubmitting(true);
+      const salt = bscrypt.genSaltSync(10);
+      const hashPassword = bscrypt.hashSync(values.password, salt);
       // delay 2s before calling API
       await new Promise((r) => setTimeout(r, 2000));
       try {
         const result = await login({
           email: values.email,
-          password: values.password,
+          password: hashPassword,
         });
 
         if (result.isSuccess) {
