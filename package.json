@@ -33,6 +33,7 @@
     "react-dom": "^19.1.0",
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
+    "sweetalert2": "^11.23.0",
     "swr": "^2.3.6",
     "typescript-eslint": "^8.43.0",
     "yup": "^1.7.0"

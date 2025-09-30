@@ -2,7 +2,7 @@ import { postMutationFetcher } from "@/lib/fetcher";
 import { useContext, useState } from "react";
 import { SwrContext } from "../../SwrProvider";
 
-export interface SaveIDCardRequest {
+export interface ViewIDCardRequest {
   cardNumber: string;
   fullName: string;
   sex: string;
@@ -16,7 +16,7 @@ export interface SaveIDCardRequest {
   backImagePath: string;
 }
 
-export interface SaveIDCardResponse {
+export interface ViewIDCardResponse {
   message: string;
   isSuccess: boolean;
 }

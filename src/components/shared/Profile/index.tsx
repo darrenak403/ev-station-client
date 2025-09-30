@@ -1,3 +1,3 @@
 export * from "./Sidebar"
-export * from "./AccountInfo"
-export * from "./IdentifyCard"
+export * from "./PersonalInformation/AccountInfo"
+export * from "./PersonalInformation/IdentifyCard"

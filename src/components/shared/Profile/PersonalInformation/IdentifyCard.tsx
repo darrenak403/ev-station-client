@@ -1,12 +1,13 @@
 "use client";
 import { MyButton } from "@/components/styled";
-import { Alert, Chip, useDisclosure } from "@heroui/react";
+import { Alert, Chip } from "@heroui/react";
 import { PencilLineIcon, UploadSimpleIcon } from "@phosphor-icons/react";
 import React from "react";
-import { IndentifyCardModal } from "./Modal/IndentifyCardModal";
+import { useCreateIDCardDisclosureSingleton } from "@/hook/singleton/disclosures";
+import ModalsRoot from "@/components/modules/Modal/ModalRoot";
 
 export const IdentifyCard = () => {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { onOpen } = useCreateIDCardDisclosureSingleton();
 
   return (
     <div className="w-full max-w-3xl xl:max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
@@ -98,8 +99,6 @@ export const IdentifyCard = () => {
           </div>
         </div>
       </div>
-
-      <IndentifyCardModal isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} />
     </div>
   );
 };
