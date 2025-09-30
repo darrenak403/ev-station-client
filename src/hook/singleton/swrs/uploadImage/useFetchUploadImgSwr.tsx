@@ -1,7 +1,6 @@
 "use client";
 import { useContext, useState } from "react";
 import { SwrContext } from "../SwrProvider";
-import { postMutationFetcher } from "@/lib/fetcher";
 
 export interface UploadImageRequest {
   formData: FormData;
@@ -12,7 +11,8 @@ export interface UploadImageResponse {
 }
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "drvkiauk3";
-const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ?? "upload";
+const UPLOAD_PRESET =
+  process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ?? "upload";
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
 export const useFetchUploadImgCore = () => {
@@ -29,7 +29,7 @@ export const useFetchUploadImgCore = () => {
       formData.append("file", file);
       formData.append("upload_preset", UPLOAD_PRESET);
 
-      // const data = await postMutationFetcher<UploadImageResponse, FormData>(
+      // const data = await formDataMutationFetcher<UploadImageResponse>(
       //   CLOUDINARY_UPLOAD_URL,
       //   { arg: formData }
       // );

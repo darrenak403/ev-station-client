@@ -20,7 +20,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { parseDate } from "@internationalized/date";
 import {
-    useCreateIDCardDisclosureSingleton,
+  useCreateIDCardDisclosureSingleton,
   useFetchSaveIDCardSwrSingleton,
   useFetchScanIDCardSwrSingleton,
   useFetchUploadImgSingleton,
@@ -28,16 +28,19 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 
 export const CreateIdCardModal = () => {
-  const { isOpen, onOpenChange, onClose } = useCreateIDCardDisclosureSingleton();
-  
+  const { isOpen, onOpenChange, onClose } =
+    useCreateIDCardDisclosureSingleton();
+
   const [frontFile, setFrontFile] = useState<File | null>(null);
   const [backFile, setBackFile] = useState<File | null>(null);
   const [frontPreview, setFrontPreview] = useState<string | null>(null);
   const [backPreview, setBackPreview] = useState<string | null>(null);
+  const [frontImageURL, setFrontImageURL] = useState<string | null>(null);
+  const [backImageURL, setBackImageURL] = useState<string | null>(null);
 
   const [scanning, setScanning] = useState(false);
-  const uploadService = useFetchUploadImgSingleton();
-  const scanService = useFetchScanIDCardSwrSingleton();
+  const { uploadImage } = useFetchUploadImgSingleton();
+  const { scanIDCard } = useFetchScanIDCardSwrSingleton();
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const saveService = useFetchSaveIDCardSwrSingleton();
   const [showAlert, setShowAlert] = useState(false);
@@ -48,18 +51,18 @@ export const CreateIdCardModal = () => {
   };
 
   const handleScan = async () => {
-    if (!frontFile || !backFile || !uploadService?.uploadImage || !scanService?.scanIDCard) return;
+    if (!frontFile || !backFile) return;
     try {
       setScanning(true);
       const [frontResult, backResult] = await Promise.all([
-        uploadService.uploadImage(frontFile),
-        uploadService.uploadImage(backFile),
+        uploadImage(frontFile),
+        uploadImage(backFile),
       ]);
-      const frontImageUrl = frontResult.secure_url;
-      const backImageUrl = backResult.secure_url;
-      const res = await scanService.scanIDCard({
-        frontImageUrl: frontImageUrl,
-        backImageUrl: backImageUrl,
+      setFrontImageURL(frontResult);
+      setBackImageURL(backResult);
+      const res = await scanIDCard({
+        frontImageUrl: frontResult,
+        backImageUrl: backResult,
       });
       if (res.isSuccess) {
         showAlertMsg("Quét CCCD thành công!", "success");
@@ -68,19 +71,23 @@ export const CreateIdCardModal = () => {
           fullName: res.data.fullName || "",
           sex: res.data.sex || "",
           nationality: res.data.nationality || "",
-          dateOfBirth: res.data.dateOfBirth ? res.data.dateOfBirth.toString() : "",
+          dateOfBirth: res.data.dateOfBirth
+            ? res.data.dateOfBirth.toString()
+            : "",
           placeOfOrigin: res.data.placeOfOrigin || "",
           placeOfResidence: res.data.placeOfResidence || "",
           createDate: res.data.createDate ? res.data.createDate.toString() : "",
-          dayOfExpiry: res.data.dayOfExpiry ? res.data.dayOfExpiry.toString() : "",
-          frontImageUrl: frontImageUrl,
-          backImageUrl: backImageUrl,
+          dayOfExpiry: res.data.dayOfExpiry
+            ? res.data.dayOfExpiry.toString()
+            : "",
+          frontImageUrl: frontResult,
+          backImageUrl: backResult,
         });
       } else {
         showAlertMsg(res.message, "danger");
       }
     } catch (error) {
-      console.error("Error uploading images:", error);
+      console.error("Error uploading images:", error.response.message);
     } finally {
       setScanning(false);
     }
@@ -134,7 +141,7 @@ export const CreateIdCardModal = () => {
           fullName: values.fullName,
           sex: values.sex,
           nationality: values.nationality,
-          dateOfBirth: values.dateOfBirth, 
+          dateOfBirth: values.dateOfBirth,
           placeOfOrigin: values.placeOfOrigin,
           placeOfResidence: values.placeOfResidence,
           createDate: values.createDate,
@@ -149,7 +156,10 @@ export const CreateIdCardModal = () => {
           showAlertMsg(res.message, "danger");
         }
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : "Lưu thông tin CCCD thất bại!";
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Lưu thông tin CCCD thất bại!";
         console.error("Save ID Card error:", message);
         showAlertMsg(message, "danger");
       } finally {
