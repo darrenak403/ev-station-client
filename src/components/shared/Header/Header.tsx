@@ -68,7 +68,7 @@ export function Header() {
   return (
     <Navbar
       isBordered
-      className="bg-white/95 backdrop-blur py-0 px-6 dark:bg-slate-900"
+      className="bg-white/95 backdrop-blur py-0 dark:bg-slate-900"
     >
       {role !== "Admin" && role !== "Staff" && (
         <NavbarContent justify="start" className="pl-0">
@@ -658,6 +658,7 @@ export function Header() {
                           <span>Trang cá nhân</span>
                         </motion.button>
                       </div>
+                      
                     </motion.div>
                   )}
                 </AnimatePresence>
