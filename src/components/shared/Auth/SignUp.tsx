@@ -8,8 +8,7 @@ import { MyButton } from "@/components";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFetchRegisterSwrSingleton } from "@/hook/singleton/swrs/fetchAuth/useFetchRegisterSwr";
-import bscrypt from "bcryptjs";
-
+import { hashPasswordSHA256 } from "../../../../type/hashPassword";
 export function SignUp() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -40,8 +39,7 @@ export function SignUp() {
     }),
     onSubmit: async (values) => {
       try {
-        const salt = bscrypt.genSaltSync(10);
-        const hashPassword = bscrypt.hashSync(values.password, salt);
+        const hashPassword = await hashPasswordSHA256(values.password);
         const result = await register({
           email: values.email,
           password: hashPassword,
