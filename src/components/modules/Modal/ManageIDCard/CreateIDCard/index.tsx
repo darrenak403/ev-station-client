@@ -20,34 +20,26 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { parseDate } from "@internationalized/date";
 import {
+    useCreateIDCardDisclosureSingleton,
   useFetchSaveIDCardSwrSingleton,
   useFetchScanIDCardSwrSingleton,
   useFetchUploadImgSingleton,
 } from "@/hook";
 import { AnimatePresence, motion } from "framer-motion";
 
-type Props = {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  onClose: () => void;
-};
-
-export const IndentifyCardModal: React.FC<Props> = ({
-  isOpen,
-  onOpenChange,
-  onClose,
-}) => {
+export const CreateIdCardModal = () => {
+  const { isOpen, onOpenChange, onClose } = useCreateIDCardDisclosureSingleton();
+  
   const [frontFile, setFrontFile] = useState<File | null>(null);
   const [backFile, setBackFile] = useState<File | null>(null);
   const [frontPreview, setFrontPreview] = useState<string | null>(null);
   const [backPreview, setBackPreview] = useState<string | null>(null);
-  const [frontURL, setFrontURL] = useState<string | null>(null);
-  const [backURL, setBackURL] = useState<string | null>(null);
+
   const [scanning, setScanning] = useState(false);
-  const { uploadImage } = useFetchUploadImgSingleton();
-  const { scanIDCard } = useFetchScanIDCardSwrSingleton();
+  const uploadService = useFetchUploadImgSingleton();
+  const scanService = useFetchScanIDCardSwrSingleton();
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
-  const { saveIDCard, loading } = useFetchSaveIDCardSwrSingleton();
+  const saveService = useFetchSaveIDCardSwrSingleton();
   const [showAlert, setShowAlert] = useState(false);
   const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
 
@@ -56,31 +48,31 @@ export const IndentifyCardModal: React.FC<Props> = ({
   };
 
   const handleScan = async () => {
-    if (!frontFile || !backFile) return;
+    if (!frontFile || !backFile || !uploadService?.uploadImage || !scanService?.scanIDCard) return;
     try {
       setScanning(true);
-      const [frontImageUrl, backImageUrl] = await Promise.all([
-        uploadImage(frontFile),
-        uploadImage(backFile),
+      const [frontResult, backResult] = await Promise.all([
+        uploadService.uploadImage(frontFile),
+        uploadService.uploadImage(backFile),
       ]);
-      setFrontURL(frontImageUrl);
-      setBackURL(backImageUrl);
-      const res = await scanIDCard({
+      const frontImageUrl = frontResult.secure_url;
+      const backImageUrl = backResult.secure_url;
+      const res = await scanService.scanIDCard({
         frontImageUrl: frontImageUrl,
         backImageUrl: backImageUrl,
       });
       if (res.isSuccess) {
         showAlertMsg("Quét CCCD thành công!", "success");
         formik.setValues({
-          cardNumber: res.data.cardNumber,
-          fullName: res.data.fullName,
-          sex: res.data.sex,
-          nationality: res.data.nationality,
-          dateOfBirth: res.data.dateOfBirth,
-          placeOfOrigin: res.data.placeOfOrigin,
-          placeOfResidence: res.data.placeOfResidence,
-          createDate: res.data.createDate,
-          dayOfExpiry: res.data.dayOfExpiry,
+          cardNumber: res.data.cardNumber || "",
+          fullName: res.data.fullName || "",
+          sex: res.data.sex || "",
+          nationality: res.data.nationality || "",
+          dateOfBirth: res.data.dateOfBirth ? res.data.dateOfBirth.toString() : "",
+          placeOfOrigin: res.data.placeOfOrigin || "",
+          placeOfResidence: res.data.placeOfResidence || "",
+          createDate: res.data.createDate ? res.data.createDate.toString() : "",
+          dayOfExpiry: res.data.dayOfExpiry ? res.data.dayOfExpiry.toString() : "",
           frontImageUrl: frontImageUrl,
           backImageUrl: backImageUrl,
         });
@@ -134,9 +126,10 @@ export const IndentifyCardModal: React.FC<Props> = ({
       backImageUrl: Yup.string().required("Vui lòng tải ảnh mặt sau"),
     }),
     onSubmit: async (values, { setSubmitting }) => {
+      if (!saveService?.saveIDCard) return;
       setSubmitting(true);
       try {
-        const res = await saveIDCard({
+        const res = await saveService.saveIDCard({
           cardNumber: values.cardNumber,
           fullName: values.fullName,
           sex: values.sex,
@@ -155,9 +148,10 @@ export const IndentifyCardModal: React.FC<Props> = ({
         } else {
           showAlertMsg(res.message, "danger");
         }
-      } catch (error) {
-        console.error("Save ID Card error:", error.response.data.message);
-        showAlertMsg("Lưu thông tin CCCD thất bại!", "danger");
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Lưu thông tin CCCD thất bại!";
+        console.error("Save ID Card error:", message);
+        showAlertMsg(message, "danger");
       } finally {
         setSubmitting(false);
       }
@@ -533,4 +527,4 @@ export const IndentifyCardModal: React.FC<Props> = ({
   );
 };
 
-export default IndentifyCardModal;
+export default CreateIdCardModal;

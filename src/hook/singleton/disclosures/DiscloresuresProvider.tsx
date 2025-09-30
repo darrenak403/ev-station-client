@@ -3,6 +3,7 @@ import {PropsWithChildren, createContext} from "react";
 import { useCreateUserDisclosureCore } from "./useManageAccount/useCreateUserDiscloresure";
 import { useUpdateUserDisclosureCore } from "./useManageAccount/useUpdateUserDiscloresure";
 import { useViewUserByIdDisclosureCore } from "./useManageAccount/useViewUserByIdDiscloresure";
+import { useCreateIDCardDisclosureCore } from "./useManageIDCard/useCreateIDCardDiscloresure";
 
 export interface DiscloresuresContextType {
   useCreateUserDisclosure: ReturnType<
@@ -14,6 +15,9 @@ export interface DiscloresuresContextType {
   useViewUserByIdDisclosure: ReturnType<
     typeof useViewUserByIdDisclosureCore
   >;
+  useCreateIDCardDisclosure: ReturnType<
+    typeof useCreateIDCardDisclosureCore
+  >;
 }
 
 export const DiscloresuresContext =
@@ -23,6 +27,7 @@ export const DiscloresuresProvider = ({children}: PropsWithChildren) => {
   const useCreateUserDisclosure = useCreateUserDisclosureCore();
   const useUpdateUserDisclosure = useUpdateUserDisclosureCore();
   const useViewUserByIdDisclosure = useViewUserByIdDisclosureCore();
+  const useCreateIDCardDisclosure = useCreateIDCardDisclosureCore();
   return (
     <>
       <DiscloresuresContext.Provider
@@ -30,6 +35,7 @@ export const DiscloresuresProvider = ({children}: PropsWithChildren) => {
           useCreateUserDisclosure,
           useUpdateUserDisclosure,
           useViewUserByIdDisclosure,
+          useCreateIDCardDisclosure,
         }}
       >
         {children}
