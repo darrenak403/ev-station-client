@@ -2,12 +2,40 @@
 import { MyButton } from "@/components/styled";
 import { Alert, Chip } from "@heroui/react";
 import { PencilLineIcon, UploadSimpleIcon } from "@phosphor-icons/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useCreateIDCardDisclosureSingleton } from "@/hook/singleton/disclosures";
-import ModalsRoot from "@/components/modules/Modal/ModalRoot";
+import { useFetchViewIDCardSwrSingleton } from "@/hook";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux";
+import Image from "next/image";
 
 export const IdentifyCard = () => {
-  const { onOpen } = useCreateIDCardDisclosureSingleton();
+  const { onOpen, setOnSuccess } = useCreateIDCardDisclosureSingleton();
+  const { viewIDCard } = useFetchViewIDCardSwrSingleton();
+  const [IDCard, setIDCard] = useState(null);
+  const authState = useSelector((state: RootState) => state.auth);
+  const user = authState.data?.user;
+
+  useEffect(() => {
+    fetchIDCard();
+  }, []);
+
+  const fetchIDCard = async () => {
+    if (user?.id) {
+      try {
+        const response = await viewIDCard(`${user.id}`);
+        setIDCard(response.data);
+        //console.log("ID Card Data:", response);
+      } catch (error) {
+        console.error("Failed to fetch ID card:", error);
+      }
+    }
+  };
+
+  const handleOpenModal = () => {
+    setOnSuccess(() => fetchIDCard);
+    onOpen();
+  }
 
   return (
     <div className="w-full max-w-3xl xl:max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
@@ -16,12 +44,16 @@ export const IdentifyCard = () => {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             Căn cước công dân
           </h2>
-          <Chip color="danger">Chưa xác thực</Chip>
+          {!IDCard ? (
+            <Chip color="danger">Chưa xác thực</Chip>
+          ) : (
+            <Chip color="success">Đã xác thực</Chip>
+          )}
         </div>
         <MyButton
           kind="green"
           shape="pill"
-          onPress={onOpen}
+          onPress={handleOpenModal}
           className="flex items-center gap-2 bg-transparent text-black dark:text-white"
         >
           <PencilLineIcon className="w-4 h-4" />
@@ -29,24 +61,35 @@ export const IdentifyCard = () => {
         </MyButton>
       </div>
 
-      <Alert color="danger" className="mb-6">
-        Vui lòng cập nhật thông tin căn cước công dân để xác thực tài khoản.
-      </Alert>
+      {!IDCard && (
+        <Alert color="danger" className="mb-6">
+          Vui lòng cập nhật thông tin căn cước công dân để xác thực tài khoản.
+        </Alert>
+      )}
 
       <div className="grid md:grid-cols-2 gap-8">
         <div>
           <h3 className="text-xl font-semibold text-gray-900 mb-4 dark:text-white">
             Hình ảnh
           </h3>
-          <div className="bg-white rounded-lg border border-gray-200 p-6 flex items-center justify-center h-64 dark:bg-gray-900 dark:border-gray-700">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <UploadSimpleIcon className="w-8 h-8 text-green-600" />
+          <div className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-center h-64 dark:bg-gray-900 dark:border-gray-700">
+            {!IDCard ? (
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <UploadSimpleIcon className="w-8 h-8 text-green-600" />
+                </div>
+                <p className="text-gray-600 text-sm dark:text-gray-300">
+                  Vào Chỉnh sửa để tải ảnh CCCD
+                </p>
               </div>
-              <p className="text-gray-600 text-sm dark:text-gray-300">
-                Vào Chỉnh sửa để tải ảnh CCCD
-              </p>
-            </div>
+            ) : (
+              <Image
+                src={IDCard?.frontImagePath || ""}
+                alt="ID Card Front"
+                width={500}
+                height={400}
+              />
+            )}
           </div>
         </div>
 
@@ -61,7 +104,8 @@ export const IdentifyCard = () => {
               </label>
               <input
                 type="text"
-                placeholder="Nhập số CCCD"
+                value={IDCard?.cardNumber || "Chưa cập nhật"}
+                readOnly
                 className="w-full px-3 py-2 border border-gray-300 dark:border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
               />
             </div>
@@ -71,7 +115,8 @@ export const IdentifyCard = () => {
               </label>
               <input
                 type="text"
-                placeholder="Nhập đầy đủ họ tên"
+                value={IDCard?.fullName || "Chưa cập nhật"}
+                readOnly
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
               />
             </div>
@@ -82,6 +127,8 @@ export const IdentifyCard = () => {
                 </label>
                 <input
                   type="date"
+                  value={IDCard?.dateOfBirth || ""}
+                  readOnly
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
                 />
               </div>
