@@ -7,6 +7,7 @@ import { useFetchGetAllUsersSwrCore } from "./fetchManageAccount/useFetchGetAllU
 import { useFetchUploadImgCore } from "./uploadImage/useFetchUploadImgSwr";
 import { useFetchScanIDCardSwrCore } from "./fetchProfile/fetchIdentityCard/useFetchScanIDCardSwr";
 import { useFetchSaveIDCardSwrCore } from "./fetchProfile/fetchIdentityCard/useFetchSaveIDCardSwr";
+import { useFetchViewIDCardSwrCore } from "./fetchProfile/fetchIdentityCard/useFecthViewIDcardSwr";
 
 export interface SwrContextType {
   useFetchLoginSwr: ReturnType<typeof useFetchLoginSwrCore>;
@@ -16,6 +17,7 @@ export interface SwrContextType {
   useFetchUploadImgSwr?: ReturnType<typeof useFetchUploadImgCore>; 
   useFetchScanIDCardSwr?: ReturnType<typeof useFetchScanIDCardSwrCore>;
   useFetchSaveIDCardSwr?: ReturnType<typeof useFetchSaveIDCardSwrCore>; 
+  useFetchViewIDCardSwr?: ReturnType<typeof useFetchViewIDCardSwrCore>;
 }
 
 export const SwrContext = createContext<SwrContextType | null>(null);
@@ -28,6 +30,7 @@ export const SwrProvider = ({children}: PropsWithChildren) => {
   const useFetchUploadImgSwr = useFetchUploadImgCore();
   const useFetchScanIDCardSwr = useFetchScanIDCardSwrCore();
   const useFetchSaveIDCardSwr = useFetchSaveIDCardSwrCore();
+  const useFetchViewIDCardSwr = useFetchViewIDCardSwrCore();
 
   return (
     <>
@@ -40,6 +43,7 @@ export const SwrProvider = ({children}: PropsWithChildren) => {
           useFetchUploadImgSwr,
           useFetchScanIDCardSwr,
           useFetchSaveIDCardSwr,
+          useFetchViewIDCardSwr,
         }}
       >
         {children}

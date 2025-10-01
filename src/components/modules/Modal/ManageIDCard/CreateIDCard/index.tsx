@@ -28,7 +28,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 
 export const CreateIdCardModal = () => {
-  const { isOpen, onOpenChange, onClose } =
+  const { isOpen, onOpenChange, onClose, onSuccess } =
     useCreateIDCardDisclosureSingleton();
 
   const [frontFile, setFrontFile] = useState<File | null>(null);
@@ -42,7 +42,7 @@ export const CreateIdCardModal = () => {
   const { uploadImage } = useFetchUploadImgSingleton();
   const { scanIDCard } = useFetchScanIDCardSwrSingleton();
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
-  const saveService = useFetchSaveIDCardSwrSingleton();
+  const { saveIDCard } = useFetchSaveIDCardSwrSingleton();
   const [showAlert, setShowAlert] = useState(false);
   const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
 
@@ -50,16 +50,31 @@ export const CreateIdCardModal = () => {
     if (url?.startsWith("blob:")) URL.revokeObjectURL(url);
   };
 
-  const handleScan = async () => {
-    if (!frontFile || !backFile) return;
+  const uploadToCloud = async (frontFile: File, backFile: File) => {
     try {
-      setScanning(true);
+      if (frontImageURL && backImageURL) {
+        return [frontImageURL, backImageURL];
+      }
       const [frontResult, backResult] = await Promise.all([
         uploadImage(frontFile),
         uploadImage(backFile),
       ]);
       setFrontImageURL(frontResult);
       setBackImageURL(backResult);
+      return [frontResult, backResult];
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
+  };
+
+  const handleScan = async () => {
+    if (!frontFile || !backFile) return;
+    try {
+      setScanning(true);
+      ;
+      const [frontResult, backResult] = await uploadToCloud(frontFile, backFile);
+
       const res = await scanIDCard({
         frontImageUrl: frontResult,
         backImageUrl: backResult,
@@ -132,11 +147,28 @@ export const CreateIdCardModal = () => {
       frontImageUrl: Yup.string().required("Vui lòng tải ảnh mặt trước"),
       backImageUrl: Yup.string().required("Vui lòng tải ảnh mặt sau"),
     }),
+
+    validate: () => {
+      const errors: any = {};
+      if(!frontFile) {
+        errors.frontImageUrl = "Vui lòng tải ảnh mặt trước";
+      }
+      if(!backFile) {
+        errors.backImageUrl = "Vui lòng tải ảnh mặt sau";
+      }
+    },
+
     onSubmit: async (values, { setSubmitting }) => {
-      if (!saveService?.saveIDCard) return;
       setSubmitting(true);
+
+      if( !frontImageURL || !backImageURL) {  
+        const [frontResult, backResult] = await uploadToCloud(frontFile!, backFile!);
+        values.frontImageUrl = frontResult;
+        values.backImageUrl = backResult;
+      }
+
       try {
-        const res = await saveService.saveIDCard({
+        const res = await saveIDCard({
           cardNumber: values.cardNumber,
           fullName: values.fullName,
           sex: values.sex,
@@ -150,18 +182,15 @@ export const CreateIdCardModal = () => {
           backImagePath: values.backImageUrl,
         });
         if (res.isSuccess) {
+          onSuccess();
           showAlertMsg("Lưu thông tin CCCD thành công!", "success");
           onClose();
         } else {
           showAlertMsg(res.message, "danger");
         }
-      } catch (error: unknown) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "Lưu thông tin CCCD thất bại!";
-        console.error("Save ID Card error:", message);
-        showAlertMsg(message, "danger");
+      } catch (error) {
+        console.error("Save ID Card error:", error.response.data.message);
+        showAlertMsg("Lưu thông tin CCCD thất bại!", "danger");
       } finally {
         setSubmitting(false);
       }
