@@ -7,3 +7,4 @@ export * from "./uploadImage/useFetchUploadImgSwr";
 export * from "./fetchProfile/fetchIdentityCard/useFetchScanIDCardSwr";
 export * from "./fetchProfile/fetchIdentityCard/useFetchSaveIDCardSwr";
 export * from "./fetchProfile/fetchIdentityCard/useFecthViewIDcardSwr";
+export * from "./fetchProfile/fetchIdentityCard/useFetchUpdateIDCardSwr";

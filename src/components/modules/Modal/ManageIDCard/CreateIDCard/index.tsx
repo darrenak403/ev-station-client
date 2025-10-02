@@ -102,7 +102,7 @@ export const CreateIdCardModal = () => {
         showAlertMsg(res.message, "danger");
       }
     } catch (error) {
-      console.error("Error uploading images:", error.response.message);
+      console.error("Error uploading images:", error.response);
     } finally {
       setScanning(false);
     }
