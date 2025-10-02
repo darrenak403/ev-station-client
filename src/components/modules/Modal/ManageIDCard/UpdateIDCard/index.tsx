@@ -25,9 +25,9 @@ import {
   useUpdateIDCardDisclosureSingleton,
   useFetchUpdateIDCardSwrSingleton,
 } from "@/hook";
-import { AnimatePresence, motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux";
+import { showToast } from "@/libs";
 
 export const UpdateIdCardModal = () => {
   const { isOpen, onOpenChange, onClose, onSuccess, initialData } =
@@ -43,10 +43,7 @@ export const UpdateIdCardModal = () => {
   const [scanning, setScanning] = useState(false);
   const { uploadImage } = useFetchUploadImgSingleton();
   const { scanIDCard } = useFetchScanIDCardSwrSingleton();
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const { updateIDCard } = useFetchUpdateIDCardSwrSingleton();
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertColor, setAlertColor] = useState<"success" | "danger">("success");
   const authState = useSelector((state: RootState) => state.auth);
   const user = authState.data?.user;
 
@@ -108,7 +105,7 @@ export const UpdateIdCardModal = () => {
         backImageUrl: backResult,
       });
       if (res.isSuccess) {
-        showAlertMsg("Quét CCCD thành công!", "success");
+        showToast("Quét CCCD thành công!", "success");
         formik.setValues({
           cardNumber: res.data.cardNumber || "",
           fullName: res.data.fullName || "",
@@ -127,10 +124,10 @@ export const UpdateIdCardModal = () => {
           backImageUrl: backResult,
         });
       } else {
-        showAlertMsg(res.message, "danger");
+        showToast(res.message || "Quét CCCD thất bại!", "error");
       }
     } catch (error) {
-      console.error("Error uploading images:", error.response.message);
+      console.error("Error uploading images:", error.response);
     } finally {
       setScanning(false);
     }
@@ -217,14 +214,14 @@ export const UpdateIdCardModal = () => {
         );
         if (res.isSuccess) {
           onSuccess();
-          showAlertMsg("Lưu thông tin CCCD thành công!", "success");
+          showToast("Lưu thông tin CCCD thành công!", "success");
           onClose();
         } else {
-          showAlertMsg(res.message, "danger");
+          showToast(res.message || "Lưu thông tin CCCD thất bại!", "error");
         }
       } catch (error) {
         console.error("Save ID Card error:", error.response.data.message);
-        showAlertMsg("Lưu thông tin CCCD thất bại!", "danger");
+       showToast("Lưu thông tin CCCD thất bại!", "error");
       } finally {
         setSubmitting(false);
       }
@@ -269,13 +266,6 @@ export const UpdateIdCardModal = () => {
     formik.setFieldTouched("backImageUrl", true);
   };
 
-  const showAlertMsg = (msg: string, color: "success" | "danger") => {
-    setAlertMessage(msg);
-    setAlertColor(color);
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 4000);
-  };
-
   return (
     <Modal
       isDismissable={false}
@@ -287,22 +277,6 @@ export const UpdateIdCardModal = () => {
       <ModalContent>
         <ModalHeader>Chỉnh sửa căn cước công dân</ModalHeader>
         <ModalBody>
-          <AnimatePresence>
-            {showAlert && (
-              <motion.div
-                key={alertMessage}
-                className="fixed top-4 right-4 z-50 w-auto max-w-md"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 40 }}
-                transition={{ type: "spring", stiffness: 420, damping: 32 }}
-              >
-                <Alert hideIconWrapper color={alertColor} className="shadow-lg">
-                  {alertMessage}
-                </Alert>
-              </motion.div>
-            )}
-          </AnimatePresence>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div>
