@@ -23,7 +23,7 @@ export default function LayoutContent({
     ((!isLoggedIn && pathname === "/") || (isLoggedIn && role === "Renter"));
 
   return (
-    <div className="">
+    <div className=" ">
       {!isAuthPage && <Header />}
       <main className="flex-1">{children}</main>
       {showFooter && <Footer />}

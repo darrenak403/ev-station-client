@@ -68,12 +68,13 @@ export function Header() {
   return (
     <Navbar
       isBordered
-      className="bg-white/95 backdrop-blur py-0 dark:bg-slate-900"
+      className="bg-white/95 backdrop-blur py-0 dark:bg-slate-900 relative"
     >
       {role !== "Admin" && role !== "Staff" && (
         <NavbarContent justify="start" className="pl-0">
           <NavbarBrand>
-            <Link href="/" className="flex items-center gap-3">
+            <div className="absolute gap-3">
+              <Link href="/" className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-green-500">
                 <span className="text-lg font-bold text-white">T</span>
               </div>
@@ -83,6 +84,8 @@ export function Header() {
                 </span>
               </div>
             </Link>
+            </div>
+            
           </NavbarBrand>
         </NavbarContent>
       )}
