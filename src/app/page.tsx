@@ -3,6 +3,8 @@
 
 import SearchHome from "@/components/shared/Home/SearchHome";
 import CarMap from "@/components/shared/Home/CarMap";
+import BenefitBooking from "@/components/shared/Home/BenefitBooking";
+import Working from "@/components/shared/Home/Working";
 
 export default function HomePage() {
   return (
@@ -10,8 +12,14 @@ export default function HomePage() {
       <div className="">
         <SearchHome />
       </div>
-      <div className="mt-20">
+      <div className="">
         <CarMap />
+      </div>
+      <div>
+        <BenefitBooking />
+      </div>
+      <div>
+        <Working />
       </div>
     </div>
   );
