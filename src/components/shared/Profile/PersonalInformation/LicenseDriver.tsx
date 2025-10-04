@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux";
 import Image from "next/image";
 
-export const IdentifyCard = () => {
+export const LicenseDriver = () => {
   const { onOpen: onOpenCreate, setOnSuccess: setOnSuccessCreate } = useCreateIDCardDisclosureSingleton();
   const { onOpen: onOpenUpdate, setOnSuccess: setOnSuccessUpdate, openWithData } =
     useUpdateIDCardDisclosureSingleton();
@@ -53,7 +53,7 @@ export const IdentifyCard = () => {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Căn cước công dân
+            Bằng lái xe
           </h2>
           {!IDCard ? (
             <Chip color="danger">Chưa xác thực</Chip>
@@ -74,7 +74,7 @@ export const IdentifyCard = () => {
 
       {!IDCard && (
         <Alert color="warning" className="mb-6">
-          Vui lòng cập nhật thông tin căn cước công dân để xác thực tài khoản.
+          Vui lòng cập nhật thông tin bằng lái xe để xác thực tài khoản.
         </Alert>
       )}
 
@@ -90,7 +90,7 @@ export const IdentifyCard = () => {
                   <UploadSimpleIcon className="w-8 h-8 text-green-600" />
                 </div>
                 <p className="text-gray-600 text-sm dark:text-gray-300">
-                  Vào Chỉnh sửa để tải ảnh CCCD
+                  Vào Chỉnh sửa để tải ảnh bằng lái xe
                 </p>
               </div>
             ) : (
@@ -111,7 +111,7 @@ export const IdentifyCard = () => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                Số CCCD
+                Số bằng lái xe
               </label>
               <input
                 type="text"
@@ -145,7 +145,7 @@ export const IdentifyCard = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                  Giới tính
+                  Hạng bằng
                 </label>
                 <input
                   type="text"

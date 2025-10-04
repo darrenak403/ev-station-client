@@ -20,6 +20,10 @@ export interface SwrContextType {
   useFetchSaveIDCardSwr?: ReturnType<typeof useFetchSaveIDCardSwrCore>; 
   useFetchViewIDCardSwr?: ReturnType<typeof useFetchViewIDCardSwrCore>;
   useFetchUpdateIDCardSwr?: ReturnType<typeof useFetchUpdateIDCardSwrCore>;
+  useFetchScanLicenseDriverSwr?: ReturnType<typeof useFetchScanIDCardSwrCore>;
+  useFetchSaveLicenseDriverSwr?: ReturnType<typeof useFetchSaveIDCardSwrCore>; 
+  useFetchViewLicenseDriverSwr?: ReturnType<typeof useFetchViewIDCardSwrCore>;
+  useFetchUpdateLicenseDriverSwr?: ReturnType<typeof useFetchUpdateIDCardSwrCore>;
 }
 
 export const SwrContext = createContext<SwrContextType | null>(null);
@@ -34,6 +38,10 @@ export const SwrProvider = ({children}: PropsWithChildren) => {
   const useFetchSaveIDCardSwr = useFetchSaveIDCardSwrCore();
   const useFetchViewIDCardSwr = useFetchViewIDCardSwrCore();
   const useFetchUpdateIDCardSwr = useFetchUpdateIDCardSwrCore();
+  const useFetchScanLicenseDriverSwr = useFetchScanIDCardSwrCore();
+  const useFetchSaveLicenseDriverSwr = useFetchSaveIDCardSwrCore();
+  const useFetchViewLicenseDriverSwr = useFetchViewIDCardSwrCore();
+  const useFetchUpdateLicenseDriverSwr = useFetchUpdateIDCardSwrCore();
 
   return (
     <>
@@ -48,6 +56,10 @@ export const SwrProvider = ({children}: PropsWithChildren) => {
           useFetchSaveIDCardSwr,
           useFetchViewIDCardSwr,
           useFetchUpdateIDCardSwr,
+          useFetchScanLicenseDriverSwr,
+          useFetchSaveLicenseDriverSwr,
+          useFetchViewLicenseDriverSwr,
+          useFetchUpdateLicenseDriverSwr,
         }}
       >
         {children}

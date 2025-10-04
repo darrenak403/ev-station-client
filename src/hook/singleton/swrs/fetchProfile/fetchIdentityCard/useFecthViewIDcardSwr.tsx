@@ -8,8 +8,8 @@ export interface ViewIDCardResponse {
   data: {
     cardNumber: string;
     fullName: string;
-    //sex: string;
-    //nationality: string;
+    sex: string;
+    nationality: string;
     dateOfBirth: string;
     placeOfOrigin: string;
     placeOfResidence: string;

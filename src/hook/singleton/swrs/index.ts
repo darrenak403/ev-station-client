@@ -8,3 +8,7 @@ export * from "./fetchProfile/fetchIdentityCard/useFetchScanIDCardSwr";
 export * from "./fetchProfile/fetchIdentityCard/useFetchSaveIDCardSwr";
 export * from "./fetchProfile/fetchIdentityCard/useFecthViewIDcardSwr";
 export * from "./fetchProfile/fetchIdentityCard/useFetchUpdateIDCardSwr";
+export * from "./fetchProfile/fetchLicenseDriver/useFetchScanLicenseDriverSwr";
+export * from "./fetchProfile/fetchLicenseDriver/useFetchSaveLicenseDriverSwr";
+export * from "./fetchProfile/fetchLicenseDriver/useFetchViewLicenseDriverSwr";
+export * from "./fetchProfile/fetchLicenseDriver/useFetchUpdateLicenseDriverSwr";
