@@ -3,34 +3,38 @@ import { MyButton } from "@/components/styled";
 import { Alert, Chip } from "@heroui/react";
 import { PencilLineIcon, UploadSimpleIcon } from "@phosphor-icons/react";
 import React, { useEffect, useState } from "react";
-import {
-  useCreateIDCardDisclosureSingleton,
-  useUpdateIDCardDisclosureSingleton,
-} from "@/hook/singleton/disclosures";
-import { useFetchViewIDCardSwrSingleton } from "@/hook";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux";
 import Image from "next/image";
+import {
+  useCreateLicenseDriverDisclosureSingleton,
+  useFetchViewLicenseDriverSwrSingleton,
+  useUpdateLicenseDriverDisclosureSingleton,
+} from "@/hook";
 
 export const LicenseDriver = () => {
-  const { onOpen: onOpenCreate, setOnSuccess: setOnSuccessCreate } = useCreateIDCardDisclosureSingleton();
-  const { onOpen: onOpenUpdate, setOnSuccess: setOnSuccessUpdate, openWithData } =
-    useUpdateIDCardDisclosureSingleton();
-  const { viewIDCard } = useFetchViewIDCardSwrSingleton();
-  const [IDCard, setIDCard] = useState(null);
+  const { onOpen: onOpenCreate, setOnSuccess: setOnSuccessCreate } =
+    useCreateLicenseDriverDisclosureSingleton();
+  const {
+    onOpen: onOpenUpdate,
+    setOnSuccess: setOnSuccessUpdate,
+    openWithData,
+  } = useUpdateLicenseDriverDisclosureSingleton();
+  const { viewLicenseDriver } = useFetchViewLicenseDriverSwrSingleton();
+  const [LicenseDriver, setLicenseDriver] = useState(null);
   const authState = useSelector((state: RootState) => state.auth);
   const user = authState.data?.user;
-  
+
   useEffect(() => {
-    fetchIDCard();
+    fetchLicenseDriver();
   }, []);
 
-  const fetchIDCard = async () => {
+  const fetchLicenseDriver= async () => {
     if (user?.id) {
       try {
-        const response = await viewIDCard(`${user.id}`);
-        setIDCard(response.data);
-        //console.log("ID Card Data:", response);
+        const response = await viewLicenseDriver(`${user.id}`);
+        setLicenseDriver(response.data);
+        console.log("ID Card Data:", response);
       } catch (error) {
         console.error("Failed to fetch ID card:", error);
       }
@@ -38,12 +42,12 @@ export const LicenseDriver = () => {
   };
 
   const handleOpenModal = () => {
-    if (!IDCard) {
-      setOnSuccessCreate(() => fetchIDCard);
+    if (!LicenseDriver) {
+      setOnSuccessCreate(() => fetchLicenseDriver);
       onOpenCreate();
     } else {
-      setOnSuccessUpdate(() => fetchIDCard);
-      openWithData(IDCard);
+      setOnSuccessUpdate(() => fetchLicenseDriver);
+      openWithData(LicenseDriver);
       onOpenUpdate();
     }
   };
@@ -55,7 +59,7 @@ export const LicenseDriver = () => {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             Bằng lái xe
           </h2>
-          {!IDCard ? (
+          {!LicenseDriver ? (
             <Chip color="danger">Chưa xác thực</Chip>
           ) : (
             <Chip color="success">Đã xác thực</Chip>
@@ -72,7 +76,7 @@ export const LicenseDriver = () => {
         </MyButton>
       </div>
 
-      {!IDCard && (
+      {!LicenseDriver && (
         <Alert color="warning" className="mb-6">
           Vui lòng cập nhật thông tin bằng lái xe để xác thực tài khoản.
         </Alert>
@@ -84,7 +88,7 @@ export const LicenseDriver = () => {
             Hình ảnh
           </h3>
           <div className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-center h-64 dark:bg-gray-900 dark:border-gray-700">
-            {!IDCard ? (
+            {!LicenseDriver ? (
               <div className="text-center">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <UploadSimpleIcon className="w-8 h-8 text-green-600" />
@@ -95,7 +99,7 @@ export const LicenseDriver = () => {
               </div>
             ) : (
               <Image
-                src={IDCard?.frontImagePath || ""}
+                src={LicenseDriver?.frontImagePath || ""}
                 alt="ID Card Front"
                 width={500}
                 height={400}
@@ -115,7 +119,7 @@ export const LicenseDriver = () => {
               </label>
               <input
                 type="text"
-                value={IDCard?.cardNumber || "Chưa cập nhật"}
+                value={LicenseDriver?.cardNumber || "Chưa cập nhật"}
                 readOnly
                 className="w-full px-3 py-2 border border-gray-300 dark:border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
               />
@@ -126,7 +130,7 @@ export const LicenseDriver = () => {
               </label>
               <input
                 type="text"
-                value={IDCard?.fullName || "Chưa cập nhật"}
+                value={LicenseDriver?.fullName || "Chưa cập nhật"}
                 readOnly
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
               />
@@ -138,7 +142,7 @@ export const LicenseDriver = () => {
                 </label>
                 <input
                   type="date"
-                  value={IDCard?.dateOfBirth || ""}
+                  value={LicenseDriver?.dateOfBirth || ""}
                   readOnly
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
                 />
@@ -149,7 +153,7 @@ export const LicenseDriver = () => {
                 </label>
                 <input
                   type="text"
-                  value={IDCard?.sex || ""}
+                  value={LicenseDriver?.sex || ""}
                   readOnly
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
                 />

@@ -24,23 +24,23 @@ export const useFetchViewLicenseDriverSwrCore = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-    const viewLicenseDriver = async (payload: string) => {
+  const viewLicenseDriver = async (payload: string) => {
     setLoading(true);
-    setError(null); 
+    setError(null);
     try {
-          const result = await fetcher<ViewLicenseDriverReponse>(
-            `/api/v1/driver-licenses/${payload}`
-          );
-          return result;
-        } catch (err: unknown) {
-          const message = err instanceof Error ? err.message : String(err);
-          setError(message);
-          throw err;
-        } finally {
-          setLoading(false);
-        }
-        };
-    return { viewLicenseDriver, loading, error, setError };
+      const result = await fetcher<ViewLicenseDriverReponse>(
+        `/api/v1/driver-licenses/${payload}`
+      );
+      return result;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+  return { viewLicenseDriver, loading, error, setError };
 };
 
 export const useFetchViewLicenseDriverSwrSingleton = () => {

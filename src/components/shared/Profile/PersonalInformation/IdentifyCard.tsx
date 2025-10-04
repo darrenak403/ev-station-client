@@ -3,24 +3,29 @@ import { MyButton } from "@/components/styled";
 import { Alert, Chip } from "@heroui/react";
 import { PencilLineIcon, UploadSimpleIcon } from "@phosphor-icons/react";
 import React, { useEffect, useState } from "react";
+
 import {
   useCreateIDCardDisclosureSingleton,
+  useFetchViewIDCardSwrSingleton,
   useUpdateIDCardDisclosureSingleton,
-} from "@/hook/singleton/disclosures";
-import { useFetchViewIDCardSwrSingleton } from "@/hook";
+} from "@/hook";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux";
 import Image from "next/image";
 
 export const IdentifyCard = () => {
-  const { onOpen: onOpenCreate, setOnSuccess: setOnSuccessCreate } = useCreateIDCardDisclosureSingleton();
-  const { onOpen: onOpenUpdate, setOnSuccess: setOnSuccessUpdate, openWithData } =
-    useUpdateIDCardDisclosureSingleton();
+  const { onOpen: onOpenCreate, setOnSuccess: setOnSuccessCreate } =
+    useCreateIDCardDisclosureSingleton();
+  const {
+    onOpen: onOpenUpdate,
+    setOnSuccess: setOnSuccessUpdate,
+    openWithData,
+  } = useUpdateIDCardDisclosureSingleton();
   const { viewIDCard } = useFetchViewIDCardSwrSingleton();
   const [IDCard, setIDCard] = useState(null);
   const authState = useSelector((state: RootState) => state.auth);
   const user = authState.data?.user;
-  
+
   useEffect(() => {
     fetchIDCard();
   }, []);
