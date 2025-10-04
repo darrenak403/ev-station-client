@@ -3,39 +3,38 @@ import { MyButton } from "@/components/styled";
 import { Alert, Chip } from "@heroui/react";
 import { PencilLineIcon, UploadSimpleIcon } from "@phosphor-icons/react";
 import React, { useEffect, useState } from "react";
-
-import {
-  useCreateIDCardDisclosureSingleton,
-  useFetchViewIDCardSwrSingleton,
-  useUpdateIDCardDisclosureSingleton,
-} from "@/hook";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux";
 import Image from "next/image";
+import {
+  useCreateLicenseDriverDisclosureSingleton,
+  useFetchViewLicenseDriverSwrSingleton,
+  useUpdateLicenseDriverDisclosureSingleton,
+} from "@/hook";
 
-export const IdentifyCard = () => {
+export const LicenseDriver = () => {
   const { onOpen: onOpenCreate, setOnSuccess: setOnSuccessCreate } =
-    useCreateIDCardDisclosureSingleton();
+    useCreateLicenseDriverDisclosureSingleton();
   const {
     onOpen: onOpenUpdate,
     setOnSuccess: setOnSuccessUpdate,
     openWithData,
-  } = useUpdateIDCardDisclosureSingleton();
-  const { viewIDCard } = useFetchViewIDCardSwrSingleton();
-  const [IDCard, setIDCard] = useState(null);
+  } = useUpdateLicenseDriverDisclosureSingleton();
+  const { viewLicenseDriver } = useFetchViewLicenseDriverSwrSingleton();
+  const [LicenseDriver, setLicenseDriver] = useState(null);
   const authState = useSelector((state: RootState) => state.auth);
   const user = authState.data?.user;
 
   useEffect(() => {
-    fetchIDCard();
+    fetchLicenseDriver();
   }, []);
 
-  const fetchIDCard = async () => {
+  const fetchLicenseDriver= async () => {
     if (user?.id) {
       try {
-        const response = await viewIDCard(`${user.id}`);
-        setIDCard(response.data);
-        //console.log("ID Card Data:", response);
+        const response = await viewLicenseDriver(`${user.id}`);
+        setLicenseDriver(response.data);
+        console.log("ID Card Data:", response);
       } catch (error) {
         console.error("Failed to fetch ID card:", error);
       }
@@ -43,12 +42,12 @@ export const IdentifyCard = () => {
   };
 
   const handleOpenModal = () => {
-    if (!IDCard) {
-      setOnSuccessCreate(() => fetchIDCard);
+    if (!LicenseDriver) {
+      setOnSuccessCreate(() => fetchLicenseDriver);
       onOpenCreate();
     } else {
-      setOnSuccessUpdate(() => fetchIDCard);
-      openWithData(IDCard);
+      setOnSuccessUpdate(() => fetchLicenseDriver);
+      openWithData(LicenseDriver);
       onOpenUpdate();
     }
   };
@@ -58,9 +57,9 @@ export const IdentifyCard = () => {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Căn cước công dân
+            Bằng lái xe
           </h2>
-          {!IDCard ? (
+          {!LicenseDriver ? (
             <Chip color="danger">Chưa xác thực</Chip>
           ) : (
             <Chip color="success">Đã xác thực</Chip>
@@ -77,9 +76,9 @@ export const IdentifyCard = () => {
         </MyButton>
       </div>
 
-      {!IDCard && (
+      {!LicenseDriver && (
         <Alert color="warning" className="mb-6">
-          Vui lòng cập nhật thông tin căn cước công dân để xác thực tài khoản.
+          Vui lòng cập nhật thông tin bằng lái xe để xác thực tài khoản.
         </Alert>
       )}
 
@@ -89,18 +88,18 @@ export const IdentifyCard = () => {
             Hình ảnh
           </h3>
           <div className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-center h-64 dark:bg-gray-900 dark:border-gray-700">
-            {!IDCard ? (
+            {!LicenseDriver ? (
               <div className="text-center">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <UploadSimpleIcon className="w-8 h-8 text-green-600" />
                 </div>
                 <p className="text-gray-600 text-sm dark:text-gray-300">
-                  Vào Chỉnh sửa để tải ảnh CCCD
+                  Vào Chỉnh sửa để tải ảnh bằng lái xe
                 </p>
               </div>
             ) : (
               <Image
-                src={IDCard?.frontImagePath || ""}
+                src={LicenseDriver?.frontImagePath || ""}
                 alt="ID Card Front"
                 width={500}
                 height={400}
@@ -116,11 +115,11 @@ export const IdentifyCard = () => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                Số CCCD
+                Số bằng lái xe
               </label>
               <input
                 type="text"
-                value={IDCard?.cardNumber || "Chưa cập nhật"}
+                value={LicenseDriver?.cardNumber || "Chưa cập nhật"}
                 readOnly
                 className="w-full px-3 py-2 border border-gray-300 dark:border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
               />
@@ -131,7 +130,7 @@ export const IdentifyCard = () => {
               </label>
               <input
                 type="text"
-                value={IDCard?.fullName || "Chưa cập nhật"}
+                value={LicenseDriver?.fullName || "Chưa cập nhật"}
                 readOnly
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
               />
@@ -143,18 +142,18 @@ export const IdentifyCard = () => {
                 </label>
                 <input
                   type="date"
-                  value={IDCard?.dateOfBirth || ""}
+                  value={LicenseDriver?.dateOfBirth || ""}
                   readOnly
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                  Giới tính
+                  Hạng bằng
                 </label>
                 <input
                   type="text"
-                  value={IDCard?.sex || ""}
+                  value={LicenseDriver?.sex || ""}
                   readOnly
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
                 />

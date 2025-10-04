@@ -9,17 +9,25 @@ import { useFetchScanIDCardSwrCore } from "./fetchProfile/fetchIdentityCard/useF
 import { useFetchSaveIDCardSwrCore } from "./fetchProfile/fetchIdentityCard/useFetchSaveIDCardSwr";
 import { useFetchViewIDCardSwrCore } from "./fetchProfile/fetchIdentityCard/useFecthViewIDcardSwr";
 import { useFetchUpdateIDCardSwrCore } from "./fetchProfile/fetchIdentityCard/useFetchUpdateIDCardSwr";
+import { useFetchScanLicenseDriverSwrCore } from "./fetchProfile/fetchLicenseDriver/useFetchScanLicenseDriverSwr";
+import { useFetchSaveLicenseDriverSwrCore } from "./fetchProfile/fetchLicenseDriver/useFetchSaveLicenseDriverSwr";
+import { useFetchViewLicenseDriverSwrCore } from "./fetchProfile/fetchLicenseDriver/useFetchViewLicenseDriverSwr";
+import { useFetchUpdateLicenseDriverSwrCore } from "./fetchProfile/fetchLicenseDriver/useFetchUpdateLicenseDriverSwr";
 
 export interface SwrContextType {
   useFetchLoginSwr: ReturnType<typeof useFetchLoginSwrCore>;
   useFetchLoginGoogleSwr: ReturnType<typeof useFetchLoginGoogleSwrCore>; 
   useFetchRegisterSwr: ReturnType<typeof useFetchRegisterSwrCore>;
   useFetchGetAllUsersSwr: ReturnType<typeof useFetchGetAllUsersSwrCore>;
-  useFetchUploadImgSwr?: ReturnType<typeof useFetchUploadImgCore>; 
-  useFetchScanIDCardSwr?: ReturnType<typeof useFetchScanIDCardSwrCore>;
-  useFetchSaveIDCardSwr?: ReturnType<typeof useFetchSaveIDCardSwrCore>; 
-  useFetchViewIDCardSwr?: ReturnType<typeof useFetchViewIDCardSwrCore>;
-  useFetchUpdateIDCardSwr?: ReturnType<typeof useFetchUpdateIDCardSwrCore>;
+  useFetchUploadImgSwr: ReturnType<typeof useFetchUploadImgCore>; 
+  useFetchScanIDCardSwr: ReturnType<typeof useFetchScanIDCardSwrCore>;
+  useFetchSaveIDCardSwr: ReturnType<typeof useFetchSaveIDCardSwrCore>; 
+  useFetchViewIDCardSwr: ReturnType<typeof useFetchViewIDCardSwrCore>;
+  useFetchUpdateIDCardSwr: ReturnType<typeof useFetchUpdateIDCardSwrCore>;
+  useFetchScanLicenseDriverSwr: ReturnType<typeof useFetchScanLicenseDriverSwrCore>;
+  useFetchSaveLicenseDriverSwr: ReturnType<typeof useFetchSaveLicenseDriverSwrCore>; 
+  useFetchViewLicenseDriverSwr: ReturnType<typeof useFetchViewLicenseDriverSwrCore>;
+  useFetchUpdateLicenseDriverSwr: ReturnType<typeof useFetchUpdateLicenseDriverSwrCore>;
 }
 
 export const SwrContext = createContext<SwrContextType | null>(null);
@@ -34,6 +42,10 @@ export const SwrProvider = ({children}: PropsWithChildren) => {
   const useFetchSaveIDCardSwr = useFetchSaveIDCardSwrCore();
   const useFetchViewIDCardSwr = useFetchViewIDCardSwrCore();
   const useFetchUpdateIDCardSwr = useFetchUpdateIDCardSwrCore();
+  const useFetchScanLicenseDriverSwr = useFetchScanLicenseDriverSwrCore();
+  const useFetchSaveLicenseDriverSwr = useFetchSaveLicenseDriverSwrCore();
+  const useFetchViewLicenseDriverSwr = useFetchViewLicenseDriverSwrCore();
+  const useFetchUpdateLicenseDriverSwr = useFetchUpdateLicenseDriverSwrCore();
 
   return (
     <>
@@ -48,6 +60,10 @@ export const SwrProvider = ({children}: PropsWithChildren) => {
           useFetchSaveIDCardSwr,
           useFetchViewIDCardSwr,
           useFetchUpdateIDCardSwr,
+          useFetchScanLicenseDriverSwr,
+          useFetchSaveLicenseDriverSwr,
+          useFetchViewLicenseDriverSwr,
+          useFetchUpdateLicenseDriverSwr,
         }}
       >
         {children}

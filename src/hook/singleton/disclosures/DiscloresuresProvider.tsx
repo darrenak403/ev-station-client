@@ -5,6 +5,8 @@ import { useUpdateUserDisclosureCore } from "./useManageAccount/useUpdateUserDis
 import { useViewUserByIdDisclosureCore } from "./useManageAccount/useViewUserByIdDiscloresure";
 import { useCreateIDCardDisclosureCore } from "./useManageIDCard/useCreateIDCardDisclosure";
 import { useUpdateIDCardDisclosureCore } from "./useManageIDCard/useUpdateIDCardDisclosure";
+import { useCreateLicenseDriverDisclosureCore } from "./useManageLicenseDriver/useCreateLicenseDriverDisclosure";
+import { useUpdateLicenseDriverDisclosureCore } from "./useManageLicenseDriver/useUpdateLicenseDriverDisclosure";
 
 export interface DiscloresuresContextType {
   useCreateUserDisclosure: ReturnType<
@@ -22,6 +24,12 @@ export interface DiscloresuresContextType {
   useUpdateIDCardDisclosure: ReturnType<
     typeof useUpdateIDCardDisclosureCore
   >
+  useCreateLicenseDriverDisclosure: ReturnType<
+    typeof useCreateLicenseDriverDisclosureCore
+  >
+  useUpdateLicenseDriverDisclosure: ReturnType<
+    typeof useUpdateLicenseDriverDisclosureCore
+  >
 }
 
 export const DiscloresuresContext =
@@ -33,6 +41,8 @@ export const DiscloresuresProvider = ({children}: PropsWithChildren) => {
   const useViewUserByIdDisclosure = useViewUserByIdDisclosureCore();
   const useCreateIDCardDisclosure = useCreateIDCardDisclosureCore();
   const useUpdateIDCardDisclosure = useUpdateIDCardDisclosureCore();
+  const useCreateLicenseDriverDisclosure = useCreateLicenseDriverDisclosureCore();
+  const useUpdateLicenseDriverDisclosure = useUpdateLicenseDriverDisclosureCore();
 
   return (
     <>
@@ -43,6 +53,8 @@ export const DiscloresuresProvider = ({children}: PropsWithChildren) => {
           useViewUserByIdDisclosure,
           useCreateIDCardDisclosure,
           useUpdateIDCardDisclosure,
+          useCreateLicenseDriverDisclosure,
+          useUpdateLicenseDriverDisclosure,
         }}
       >
         {children}
