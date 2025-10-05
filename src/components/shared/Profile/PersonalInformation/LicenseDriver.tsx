@@ -1,5 +1,5 @@
 "use client";
-import { MyButton } from "@/components/styled";
+import { MyButton } from "@/components/styled/Button";
 import { Alert, Chip } from "@heroui/react";
 import { PencilLineIcon, UploadSimpleIcon } from "@phosphor-icons/react";
 import React, { useEffect, useState } from "react";

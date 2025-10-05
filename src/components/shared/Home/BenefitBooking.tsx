@@ -49,7 +49,7 @@ const features = [
 ];
 const BenefitBooking = () => {
   return (
-    <section className="md:py-10 bg-background relative overflow-hidden min-h-screen">
+    <section className="md:py-10 bg-gray-100 relative overflow-hidden min-h-screen dark:bg-gray-950">
       <div className="container mx-auto ">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-medium text-green-600">
@@ -57,10 +57,10 @@ const BenefitBooking = () => {
             Tính năng nổi bật
           </div>
           <h2 className="text-3xl md:text-5xl font-bold text-balance text-foreground">
-            Tại sao chọn EV-Station?
+            Tại sao chọn chúng tôi?
           </h2>
           <p className="text-lg text-muted-foreground text-pretty leading-relaxed">
-            Chúng tôi mang đến trải nghiệm tốt nhất cho người dùng xe điện với
+            Chúng tôi mang đến trải nghiệm tốt nhất với
             công nghệ hiện đại và dịch vụ chuyên nghiệp
           </p>
         </div>
@@ -70,7 +70,7 @@ const BenefitBooking = () => {
           {features.map((feature, index) => (
             <Card
               key={index}
-              className="p-8 hover:shadow-xl transform transition-all ease-out duration-300 hover:-translate-y-1 bg-card border-border group"
+              className="p-8 hover:shadow-xl transform transition-all ease-out duration-300 hover:-translate-y-1 bg-card border-border group dark:bg-gray-900"
             >
               <div className="space-y-4">
                 <div
