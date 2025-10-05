@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { MyButton } from "@/components/styled";
+import { MyButton } from "@/components/styled/Button";
 import {
   DatePicker,
   Form,

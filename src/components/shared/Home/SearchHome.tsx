@@ -1,26 +1,34 @@
+import TextType from "@/components/styled/TextType/TextType";
 import React from "react";
-import Image from "next/image";
-import image1 from "../../../../public/Images/ImageHome.jpg";
 
 const SearchHome = () => {
   return (
-    <div className=" min-h-180 bg-background relative overflow-hidden dark:bg-black">
+    <div className=" min-h-180 bg-background relative overflow-hidden">
       <div className="mx-auto relative flex items-center justify-center">
-        <Image
-          src={image1}
-          alt="Image 1"
-          width={1200}
-          className="h-[600px] rounded-2xl brightness-50"
-          quality={100}
-          priority
+        <video
+          src="/Images/Bookings.mp4"
+          aria-hidden
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-300 h-[600px] rounded-2xl object-cover brightness-50"
         />
       </div>
       <div className="absolute top-80 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded shadow-lg">
         <div className="text-center w-250">
-          <h2 className="text-6xl font-bold mb-4 text-white">
-            THDV - CÙNG BẠN
-          </h2>
-          <h2 className="text-6xl font-bold text-white">TRÊN MỌI NẺO ĐƯỜNG</h2>
+          <div className="text-6xl font-bold mb-4 text-white">
+            <TextType
+              text={[
+                "THDV - ĐỈNH CAO TRẢI NGHIỆM",
+                "MỖI CHUYẾN ĐI LÀ MỘT KỶ NIỆM",
+              ]}
+              typingSpeed={75}
+              pauseDuration={1500}
+              showCursor={true}
+              cursorCharacter="|"
+            />
+          </div>
           <hr className="border-t border-white w-1/2 mx-auto" />
           <p className="mt-4 text-lg text-white">
             Uy tín với hơn{" "}

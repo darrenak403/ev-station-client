@@ -5,6 +5,8 @@ import SearchHome from "@/components/shared/Home/SearchHome";
 import CarMap from "@/components/shared/Home/CarMap";
 import BenefitBooking from "@/components/shared/Home/BenefitBooking";
 import Working from "@/components/shared/Home/Working";
+import { Pricing } from "@/components/shared/Home/Pricing";
+import Rate from "@/components/shared/Home/Rate";
 
 export default function HomePage() {
   return (
@@ -12,14 +14,20 @@ export default function HomePage() {
       <div className="">
         <SearchHome />
       </div>
-      <div className="">
-        <CarMap />
-      </div>
-      <div>
+      <div className="">      
         <BenefitBooking />
       </div>
       <div>
+         <CarMap />
+      </div>
+      <div>
         <Working />
+      </div>
+      <div>
+        <Pricing />
+      </div>
+      <div>
+        <Rate />
       </div>
     </div>
   );
