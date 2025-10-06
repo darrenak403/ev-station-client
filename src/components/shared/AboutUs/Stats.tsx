@@ -29,7 +29,7 @@ const stats = [
 
 const Stats = () => {
   return (
-    <section className="md:py-20 bg-white overflow-hidden relative">
+    <section className="md:py-20 overflow-hidden relative">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl" />

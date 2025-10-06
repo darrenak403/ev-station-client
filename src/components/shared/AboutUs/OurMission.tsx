@@ -14,9 +14,9 @@ const OurMission = () => {
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto ">
           {/* Mission */}
-          <div className="bg-white border border-border rounded-2xl p-8 overflow-hidden relative">
+          <div className="bg-white border border-border rounded-2xl p-8 overflow-hidden relative dark:bg-gray-800">
             <div className="w-full h-48 mb-6 rounded-xl overflow-hidden">
               <Image src="/Images/Blog/Missions.png" alt="Our Mission" width={400} height={200} className="w-full h-full object-cover" />
             </div>
@@ -43,7 +43,7 @@ const OurMission = () => {
           </div>
 
           {/* Vision */}
-          <div className="bg-white border border-border rounded-2xl p-8 overflow-hidden relative">
+          <div className="bg-white border border-border rounded-2xl p-8 overflow-hidden relative dark:bg-gray-800">
             <div className="w-full h-48 mb-6 rounded-xl overflow-hidden">
               <Image src="/Images/Blog/Vision.png" alt="Our Vision" width={400} height={200} className="w-full h-full object-cover" />
             </div>
