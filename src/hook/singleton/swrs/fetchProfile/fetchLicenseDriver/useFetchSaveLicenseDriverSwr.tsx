@@ -8,7 +8,7 @@ export interface SaveLicenseDriverRequest {
   dateOfBirth: string,
   nationality: string,
   address: string,
-  licenseClass: string,
+  licenseClass: number,
   beginingDate: string,
   expiresDate: string,
   classificationOfMotorVehicles: string,

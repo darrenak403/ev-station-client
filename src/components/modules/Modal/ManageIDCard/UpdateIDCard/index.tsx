@@ -99,6 +99,8 @@ export const UpdateIdCardModal = () => {
         frontFile,
         backFile
       );
+      
+      console.log(">>> frontResult, backResult:", frontResult, backResult);
 
       const res = await scanIDCard({
         frontImageUrl: frontResult,
@@ -235,6 +237,7 @@ export const UpdateIdCardModal = () => {
     const url = URL.createObjectURL(f);
     setFrontFile(f);
     setFrontPreview(url);
+    setFrontImageURL(null);
     formik.setFieldValue("frontImageUrl", url);
     formik.setFieldTouched("frontImageUrl", true);
   };
@@ -246,6 +249,7 @@ export const UpdateIdCardModal = () => {
     const url = URL.createObjectURL(f);
     setBackFile(f);
     setBackPreview(url);
+    setBackImageURL(null);
     formik.setFieldValue("backImageUrl", url);
     formik.setFieldTouched("backImageUrl", true);
   };
