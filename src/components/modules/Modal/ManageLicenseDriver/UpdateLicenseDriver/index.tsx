@@ -11,6 +11,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Select,
+  SelectItem,
   Textarea,
 } from "@heroui/react";
 import { UploadSimpleIcon, XCircleIcon } from "@phosphor-icons/react";
@@ -21,9 +23,13 @@ import { showToast } from "@/libs";
 import {
   useFetchSaveLicenseDriverSwrSingleton,
   useFetchScanLicenseDriverSwrSingleton,
+  useFetchUpdateLicenseDriverSwrSingleton,
   useFetchUploadImgSingleton,
   useUpdateLicenseDriverDisclosureSingleton,
 } from "@/hook";
+import { classLicenseOptions } from "../CreateLicenseDriver";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux";
 
 export const UpdateLicenseDriverModal = () => {
   const { isOpen, onOpenChange, onClose, onSuccess, initialData } =
@@ -38,8 +44,11 @@ export const UpdateLicenseDriverModal = () => {
 
   const [scanning, setScanning] = useState(false);
   const { uploadImage } = useFetchUploadImgSingleton();
-  const { saveLicenseDriver } = useFetchSaveLicenseDriverSwrSingleton();
+  const { updateLicenseDriver } = useFetchUpdateLicenseDriverSwrSingleton();
   const { scanLicenseDriver } = useFetchScanLicenseDriverSwrSingleton();
+
+  const authState = useSelector((state: RootState) => state.auth);
+  const user = authState.data?.user;
 
   useEffect(() => {
     if (isOpen && initialData) {
@@ -49,7 +58,7 @@ export const UpdateLicenseDriverModal = () => {
         dateOfBirth: initialData.dateOfBirth || "",
         nationality: initialData.nationality || "",
         address: initialData.address || "",
-        licenseClass: initialData.licenseClass || "",
+        licenseClass: String(initialData.licenseClass) || "",
         beginingDate: initialData.beginingDate || "",
         expiresDate: initialData.expiresDate || "",
         classificationOfMotorVehicles:
@@ -108,9 +117,9 @@ export const UpdateLicenseDriverModal = () => {
           dateOfBirth: res.data.dateOfBirth,
           nationality: res.data.nationality,
           address: res.data.address,
-          licenseClass: res.data.licenseClass,
+          licenseClass: String(res.data.licenseClass),
           beginingDate: res.data.beginingDate,
-          expiresDate: res.data.expiresDate,
+          expiresDate: "9999-12-31",
           classificationOfMotorVehicles: res.data.classificationOfMotorVehicles,
           frontImageUrl: frontResult,
           backImageUrl: backResult,
@@ -156,7 +165,7 @@ export const UpdateLicenseDriverModal = () => {
       address: Yup.string().required("Địa chỉ thường trú là bắt buộc"),
       licenseClass: Yup.string().required("Hạng bằng là bắt buộc"),
       beginingDate: Yup.string().required("Ngày cấp là bắt buộc"),
-      expiresDate: Yup.string().required("Ngày hết hạn là bắt buộc"),
+      //expiresDate: Yup.string().required("Ngày hết hạn là bắt buộc"),
       classificationOfMotorVehicles: Yup.string().required(
         "Hạng phương tiện là bắt buộc"
       ),
@@ -187,19 +196,22 @@ export const UpdateLicenseDriverModal = () => {
       }
 
       try {
-        const res = await saveLicenseDriver({
-          licenseNumber: values.licenseNumber,
-          fullName: values.fullName,
-          dateOfBirth: values.dateOfBirth,
-          nationality: values.nationality,
-          address: values.address,
-          licenseClass: values.licenseClass,
-          beginingDate: values.beginingDate,
-          expiresDate: values.expiresDate,
-          classificationOfMotorVehicles: values.classificationOfMotorVehicles,
-          frontImagePath: values.frontImageUrl,
-          backImagePath: values.backImageUrl,
-        });
+        const res = await updateLicenseDriver(
+          {
+            licenseNumber: values.licenseNumber,
+            fullName: values.fullName,
+            dateOfBirth: values.dateOfBirth,
+            nationality: values.nationality,
+            address: values.address,
+            licenseClass: Number(values.licenseClass),
+            beginingDate: values.beginingDate,
+            expiresDate: "9999-12-31",
+            classificationOfMotorVehicles: values.classificationOfMotorVehicles,
+            frontImagePath: values.frontImageUrl,
+            backImagePath: values.backImageUrl,
+          },
+          user?.id
+        );
         if (res.isSuccess) {
           onSuccess();
           showToast("Lưu thông tin GPLX thành công!", "success");
@@ -208,7 +220,7 @@ export const UpdateLicenseDriverModal = () => {
           showToast(res.message || "Lưu thông tin GPLX thất bại!", "error");
         }
       } catch (error) {
-        console.error("Save ID Card error:", error.response.data.message);
+        console.error("Save ID Card error:", error.response);
         showToast("Lưu thông tin GPLX thất bại!", "error");
       } finally {
         setSubmitting(false);
@@ -223,6 +235,7 @@ export const UpdateLicenseDriverModal = () => {
     const url = URL.createObjectURL(f);
     setFrontFile(f);
     setFrontPreview(url);
+    setFrontImageURL(null);
     formik.setFieldValue("frontImageUrl", url);
     formik.setFieldTouched("frontImageUrl", true);
   };
@@ -234,6 +247,7 @@ export const UpdateLicenseDriverModal = () => {
     const url = URL.createObjectURL(f);
     setBackFile(f);
     setBackPreview(url);
+    setBackImageURL(null);
     formik.setFieldValue("backImageUrl", url);
     formik.setFieldTouched("backImageUrl", true);
   };
@@ -465,19 +479,27 @@ export const UpdateLicenseDriverModal = () => {
                 variant="bordered"
               />
 
-              <Input
-                label="Hạng"
-                value={formik.values.licenseClass}
-                onValueChange={(v) => formik.setFieldValue("licenseClass", v)}
-                isInvalid={
-                  !!formik.errors.licenseClass && formik.touched.licenseClass
+              <Select
+                label="Hạng bằng"
+                selectedKeys={
+                  formik.values.licenseClass
+                    ? new Set([String(formik.values.licenseClass)])
+                    : new Set()
                 }
+                onSelectionChange={(keys) => {
+                  const key = Array.from(keys)[0];
+                  formik.setFieldValue("licenseClass", key);
+                }}
                 errorMessage={formik.errors.licenseClass}
                 onBlur={() => formik.setFieldTouched("licenseClass", true)}
                 variant="bordered"
-              />
+              >
+                {classLicenseOptions.map((option) => (
+                  <SelectItem key={option.value}>{option.label}</SelectItem>
+                ))}
+              </Select>
 
-              <DatePicker
+              {/* <DatePicker
                 label="Ngày trúng tuyển"
                 placeholderValue={parseDate("2021-01-01")}
                 showMonthAndYearPickers
@@ -494,7 +516,7 @@ export const UpdateLicenseDriverModal = () => {
                 }
                 errorMessage={formik.errors.beginingDate}
                 variant="bordered"
-              />
+              /> */}
 
               <DatePicker
                 label="Ngày hết hạn"

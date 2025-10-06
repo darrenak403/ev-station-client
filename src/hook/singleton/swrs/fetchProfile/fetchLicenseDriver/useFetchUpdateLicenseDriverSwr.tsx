@@ -8,7 +8,7 @@ interface UpdateLicenseDriverRequest {
   dateOfBirth: string;
   nationality: string;
   address: string;
-  licenseClass: string;
+  licenseClass: number;
   beginingDate: string;
   expiresDate: string;
   classificationOfMotorVehicles: string;
@@ -32,10 +32,11 @@ export const useFetchUpdateLicenseDriverSwrCore = () => {
     setLoading(true);
     setError(null);
     try {
+      console.log(">>> Payload in updateLicenseDriver:", payload);
       const result = await putMutationFetcher<
         UpdateLicenseDriverResponse,
         UpdateLicenseDriverRequest
-      >(`/api/v1/identity-cards/${id}`, { arg: payload });
+      >(`/api/v1/driver-licenses/${id}`, { arg: payload });
       return result;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);

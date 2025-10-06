@@ -11,6 +11,7 @@ import {
   useFetchViewLicenseDriverSwrSingleton,
   useUpdateLicenseDriverDisclosureSingleton,
 } from "@/hook";
+import { classLicenseOptions } from "@/components/modules/Modal/ManageLicenseDriver/CreateLicenseDriver";
 
 export const LicenseDriver = () => {
   const { onOpen: onOpenCreate, setOnSuccess: setOnSuccessCreate } =
@@ -29,12 +30,12 @@ export const LicenseDriver = () => {
     fetchLicenseDriver();
   }, []);
 
-  const fetchLicenseDriver= async () => {
+  const fetchLicenseDriver = async () => {
     if (user?.id) {
       try {
         const response = await viewLicenseDriver(`${user.id}`);
-        setLicenseDriver(response.data);
-        console.log("ID Card Data:", response);
+        setLicenseDriver(response.data[0]);
+        //console.log("License Driver Data:", response.data[0]);
       } catch (error) {
         console.error("Failed to fetch ID card:", error);
       }
@@ -99,8 +100,10 @@ export const LicenseDriver = () => {
               </div>
             ) : (
               <Image
+                className="w-full h-full object-contain rounded-lg"
+                unoptimized
                 src={LicenseDriver?.frontImagePath || ""}
-                alt="ID Card Front"
+                alt="License Driver Front"
                 width={500}
                 height={400}
               />
@@ -119,7 +122,7 @@ export const LicenseDriver = () => {
               </label>
               <input
                 type="text"
-                value={LicenseDriver?.cardNumber || "Chưa cập nhật"}
+                value={LicenseDriver?.licenseNumber || "Chưa cập nhật"}
                 readOnly
                 className="w-full px-3 py-2 border border-gray-300 dark:border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
               />
@@ -153,7 +156,11 @@ export const LicenseDriver = () => {
                 </label>
                 <input
                   type="text"
-                  value={LicenseDriver?.sex || ""}
+                  value={
+                    classLicenseOptions.find(
+                      (x) => x.value === String(LicenseDriver?.licenseClass)
+                    )?.label || ""
+                  }
                   readOnly
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
                 />

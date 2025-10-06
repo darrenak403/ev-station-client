@@ -35,7 +35,7 @@ export const IdentifyCard = () => {
       try {
         const response = await viewIDCard(`${user.id}`);
         setIDCard(response.data);
-        //console.log("ID Card Data:", response);
+        console.log("ID Card Data:", response);
       } catch (error) {
         console.error("Failed to fetch ID card:", error);
       }
@@ -100,6 +100,8 @@ export const IdentifyCard = () => {
               </div>
             ) : (
               <Image
+                className="w-full h-full object-contain rounded-lg" 
+                unoptimized
                 src={IDCard?.frontImagePath || ""}
                 alt="ID Card Front"
                 width={500}

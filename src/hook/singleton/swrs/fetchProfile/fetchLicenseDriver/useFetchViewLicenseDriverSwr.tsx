@@ -11,7 +11,7 @@ interface ViewLicenseDriverReponse {
     dateOfBirth: string;
     nationality: string;
     address: string;
-    licenseClass: string;
+    licenseClass: number;
     beginingDate: string;
     expiresDate: string;
     classificationOfMotorVehicles: string;
@@ -29,7 +29,7 @@ export const useFetchViewLicenseDriverSwrCore = () => {
     setError(null);
     try {
       const result = await fetcher<ViewLicenseDriverReponse>(
-        `/api/v1/driver-licenses/${payload}`
+        `/api/v1/driver-licenses/users/${payload}`
       );
       return result;
     } catch (err: unknown) {

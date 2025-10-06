@@ -11,6 +11,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Select,
+  SelectItem,
   Textarea,
 } from "@heroui/react";
 import { UploadSimpleIcon, XCircleIcon } from "@phosphor-icons/react";
@@ -24,6 +26,16 @@ import {
   useFetchScanLicenseDriverSwrSingleton,
   useFetchUploadImgSingleton,
 } from "@/hook";
+import { LicenseDriver } from "@/components/shared/Profile/PersonalInformation/LicenseDriver";
+
+export const classLicenseOptions = [
+  { value: "0", label: "A1" },
+  { value: "1", label: "A2" },
+  { value: "2", label: "B1" },
+  { value: "3", label: "B2" },
+  { value: "4", label: "C" },
+  { value: "5", label: "D" },
+];
 
 export const CreateLicenseDriverModal = () => {
   const { isOpen, onOpenChange, onClose, onSuccess } =
@@ -87,7 +99,7 @@ export const CreateLicenseDriverModal = () => {
           address: res.data.address,
           licenseClass: res.data.licenseClass,
           beginingDate: res.data.beginingDate,
-          expiresDate: res.data.expiresDate,
+          expiresDate: "9999-12-31",
           classificationOfMotorVehicles: res.data.classificationOfMotorVehicles,
           frontImageUrl: frontResult,
           backImageUrl: backResult,
@@ -131,9 +143,9 @@ export const CreateLicenseDriverModal = () => {
       dateOfBirth: Yup.string().required("Ngày sinh là bắt buộc"),
       nationality: Yup.string().required("Quốc tịch là bắt buộc"),
       address: Yup.string().required("Địa chỉ thường trú là bắt buộc"),
-      licenseClass: Yup.string().required("Hạng bằng là bắt buộc"),
+      licenseClass: Yup.string().required("Loại GPLX là bắt buộc"),
       beginingDate: Yup.string().required("Ngày cấp là bắt buộc"),
-      expiresDate: Yup.string().required("Ngày hết hạn là bắt buộc"),
+      //expiresDate: Yup.string().required("Ngày hết hạn là bắt buộc"),
       classificationOfMotorVehicles: Yup.string().required(
         "Hạng phương tiện là bắt buộc"
       ),
@@ -170,9 +182,9 @@ export const CreateLicenseDriverModal = () => {
           dateOfBirth: values.dateOfBirth,
           nationality: values.nationality,
           address: values.address,
-          licenseClass: values.licenseClass,
+          licenseClass: Number(values.licenseClass),
           beginingDate: values.beginingDate,
-          expiresDate: values.expiresDate,
+          expiresDate: "9999-12-31",
           classificationOfMotorVehicles: values.classificationOfMotorVehicles,
           frontImagePath: values.frontImageUrl,
           backImagePath: values.backImageUrl,
@@ -442,17 +454,25 @@ export const CreateLicenseDriverModal = () => {
                 variant="bordered"
               />
 
-              <Input
-                label="Hạng"
-                value={formik.values.licenseClass}
-                onValueChange={(v) => formik.setFieldValue("licenseClass", v)}
-                isInvalid={
-                  !!formik.errors.licenseClass && formik.touched.licenseClass
+              <Select
+                label="Hạng bằng"
+                selectedKeys={
+                  formik.values.licenseClass
+                    ? new Set([String(formik.values.licenseClass)])
+                    : new Set()
                 }
+                onSelectionChange={(keys) => {
+                  const key = Array.from(keys)[0];
+                  formik.setFieldValue("licenseClass", key);
+                }}
                 errorMessage={formik.errors.licenseClass}
                 onBlur={() => formik.setFieldTouched("licenseClass", true)}
                 variant="bordered"
-              />
+              >
+                {classLicenseOptions.map((option) => (
+                  <SelectItem key={option.value}>{option.label}</SelectItem>
+                ))}
+              </Select>
 
               <DatePicker
                 label="Ngày trúng tuyển"
@@ -473,7 +493,7 @@ export const CreateLicenseDriverModal = () => {
                 variant="bordered"
               />
 
-              <DatePicker
+              {/* <DatePicker
                 label="Ngày hết hạn"
                 value={
                   formik.values.expiresDate
@@ -488,7 +508,7 @@ export const CreateLicenseDriverModal = () => {
                 }
                 errorMessage={formik.errors.expiresDate}
                 variant="bordered"
-              />
+              /> */}
 
               <Textarea
                 label="Loại phương tiện"
