@@ -3,7 +3,7 @@ import CountUp from "@/components/styled/CountUp/CountUp";
 import { Icon } from "@iconify/react";
 const Rate = () => {
   return (
-    <section className="md:py-10 bg-green-50 min-h-130">
+    <section className="md:py-10 bg-green-50 min-h-130 dark:bg-gray-950">
       <div className="container max-w-6xl mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-medium text-green-600">
