@@ -47,7 +47,7 @@ const plans = [
 
 export function Pricing() {
   return (
-    <section className="md:py-10">
+    <section className="md:py-10 min-h-240">
       <div className="m-container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-medium text-green-600">
