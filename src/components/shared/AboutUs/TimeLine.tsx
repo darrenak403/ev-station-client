@@ -37,8 +37,8 @@ const timeline = [
 const TimeLine = () => {
   return (
     <section className="md:py-20 overflow-hidden bg-gray-100 dark:bg-gray-900">
-      <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center mb-16">
+      <div className="container flex flex-col mx-auto px-4 gap-8">
+        <div className="max-w-3xl mx-auto text-center mb-10">
           <div className="inline-flex items-center gap-2 text-green-600 mb-4">
             <span className="text-sm font-semibold uppercase tracking-wide">Hành Trình</span>
           </div>
@@ -65,7 +65,7 @@ const TimeLine = () => {
                 >
                   {/* Content */}
                   <div className={`flex-1 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}>
-                    <div className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+                    <div className="bg-card flex flex-col gap-4 border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg transition-all duration-300">
                       <div className="aspect-video w-full overflow-hidden">
                         <Image
                           src={item.image || "/placeholder.svg"}
@@ -75,9 +75,9 @@ const TimeLine = () => {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="p-6">
-                        <div className="text-3xl font-bold text-green-500 mb-2">{item.year}</div>
-                        <h3 className="text-xl font-bold text-foreground mb-3">{item.title}</h3>
+                      <div className="p-4 flex flex-col gap-2">
+                        <div className="text-3xl font-bold text-green-500">{item.year}</div>
+                        <h3 className="text-xl font-bold text-foreground">{item.title}</h3>
                         <p className="text-muted-foreground leading-relaxed">{item.description}</p>
                       </div>
                     </div>

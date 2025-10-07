@@ -9,7 +9,7 @@ const plans = [
     name: "Cơ bản",
     price: "0",
     description: "Dành cho người dùng thử nghiệm",
-    features: ["Tìm kiếm trạm sạc", "Đặt lịch sạc cơ bản", "Thanh toán theo lượt", "Hỗ trợ email", "Lịch sử giao dịch"],
+    features: ["Tìm kiếm trạm sạc", "Đặt lịch sạc cơ bản", "Đặt xe giới hạn", "Thanh toán theo lượt", "Hỗ trợ email", "Lịch sử giao dịch"],
     icon: "mdi:account-outline",
     popular: false,
   },
@@ -47,9 +47,9 @@ const plans = [
 
 export function Pricing() {
   return (
-    <section className="md:py-10 min-h-240">
-      <div className="m-container mx-auto px-4">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+    <section className="md:py-20 min-h-screen">
+      <div className="container flex flex-col mx-auto px-4 gap-10">
+        <div className="text-center max-w-3xl mx-auto mb-10 space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-medium text-green-600">
             <Icon icon="mdi:tag-outline" className="h-4 w-4" />
             Bảng giá
@@ -60,21 +60,22 @@ export function Pricing() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan, index) => (
+        <div className="flex flex-col items-center ">
+          <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 mx-auto gap-8">
+            {plans.map((plan, index) => (
             <Card
               key={index}
-              className={` p-8 bg-card border-border hover:shadow-2xl transition-all duration-300 relative ${
+              className={` p-8 bg-card border hover:shadow-2xl transition-all duration-300 relative ${
                 plan.popular ? "ring-2 ring-green-600 scale-105" : ""
               } dark:bg-gray-900`}
             >
               {plan.popular && (
-                <div className="absolute top-0 w-full text-center left-1/2 -translate-x-1/2 bg-green-600 text-green-100 text-sm font-bold">
+                <div className="absolute top-0 w-full rounded-tl rounded-tr text-center left-1/2 -translate-x-1/2 bg-green-600 text-green-100 text-sm font-bold">
                   Phổ biến nhất
                 </div>
               )}
 
-              <div className="space-y-6">
+              <div className="space-y-6 h-full flex flex-col gap-4">
                 <div className="space-y-4">
                   <div className="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center">
                     <Icon icon={plan.icon} className="h-7 w-7 text-green-600" />
@@ -113,6 +114,7 @@ export function Pricing() {
               </div>
             </Card>
           ))}
+          </div>
         </div>
       </div>
     </section>
