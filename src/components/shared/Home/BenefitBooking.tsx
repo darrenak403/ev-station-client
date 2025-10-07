@@ -50,8 +50,8 @@ const features = [
 const BenefitBooking = () => {
   return (
     <section className="md:py-10 bg-gray-100 relative overflow-hidden min-h-screen dark:bg-gray-950">
-      <div className="container mx-auto ">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <div className="container flex flex-col mx-auto px-4 gap-8 ">
+        <div className="text-center max-w-3xl mx-auto mb-10 space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-medium text-green-600">
             <Icon icon="mdi:star-four-points" className="h-4 w-4" />
             Tính năng nổi bật
@@ -72,13 +72,13 @@ const BenefitBooking = () => {
               key={index}
               className="p-8 hover:shadow-xl transform transition-all ease-out duration-300 hover:-translate-y-1 bg-card border-border group dark:bg-gray-900"
             >
-              <div className="space-y-4">
+              <div className="space-y-4 flex flex-col gap-4">
                 <div
                   className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-green-100 ${feature.color} group-hover:scale-110 transition-transform`}
                 >
                   <Icon icon={feature.icon} className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-bold text-card-foreground">
+                <h3 className="text-lg font-bold m-0">
                   {feature.title}
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">

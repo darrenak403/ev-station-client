@@ -36,8 +36,8 @@ const Stats = () => {
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10 dark:text-white">
-        <div className="max-w-3xl mx-auto text-center mb-16">
+      <div className="container flex flex-col gap-8 mx-auto px-4 relative dark:text-white">
+        <div className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-4xl font-bold mb-6 text-balance">Con Số Ấn Tượng</h2>
 
           <p className="text-lg text-primary-foreground/90 text-pretty">
@@ -45,9 +45,9 @@ const Stats = () => {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-4 gap-8 w-5xl mx-auto">
           {stats.map((stat, index) => (
-            <div key={index} className="text-center group">
+            <div key={index} className="text-center flex flex-col gap-1 group">
               <div className="w-full aspect-square bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden mb-4 group-hover:bg-white/20 transition-colors">
                 <Image
                   src={stat.image || "/placeholder.svg"}
@@ -57,9 +57,9 @@ const Stats = () => {
                 />
               </div>
 
-              <div className="text-5xl font-bold mb-2">{stat.value}</div>
+              <div className="text-5xl font-bold">{stat.value}</div>
 
-              <div className="text-xl font-semibold mb-1">{stat.label}</div>
+              <div className="text-xl font-semibold">{stat.label}</div>
 
               <div className="text-sm text-primary-foreground/80">{stat.description}</div>
             </div>

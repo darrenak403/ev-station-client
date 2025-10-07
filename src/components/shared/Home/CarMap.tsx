@@ -35,8 +35,8 @@ const vehicles = [
 const CarMap = () => {
   return (
     <section className="md:py-10 relative overflow-hidden min-h-screen">
-      <div className="container mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <div className="container flex flex-col mx-auto px-4 gap-8">
+        <div className="text-center max-w-3xl mx-auto mb-10 space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-medium text-green-600">
             <Icon icon="mdi:car-electric" className="h-4 w-4" />
             Thuê xe điện
@@ -67,7 +67,7 @@ const CarMap = () => {
                 </div>
               </div>
 
-              <div className="p-6 space-y-4">
+              <div className="flex flex-col px-9 gap-4 py-6">
                 <div>
                   <h3 className="text-xl font-bold text-card-foreground mb-1">{vehicle.name}</h3>
                   <p className="text-sm text-muted-foreground">{vehicle.type}</p>
@@ -91,7 +91,7 @@ const CarMap = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-border">
+                <div className="flex items-center justify-between pt-4 gap-1 border-t border-border">
                   <div>
                     <p className="text-sm text-muted-foreground">Từ</p>
                     <p className="text-2xl font-bold text-green-600">

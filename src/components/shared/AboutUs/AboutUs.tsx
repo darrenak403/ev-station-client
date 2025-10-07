@@ -5,10 +5,10 @@ import CountUp from "@/components/styled/CountUp/CountUp";
 
 const AboutUs = () => {
   return (
-    <section className="md:py-10 relative overflow-hidden ">
-      <div className="container max-w-6xl mx-auto px-4 relative">
+    <section className="md:py-10 bg-white relative overflow-hidden dark:bg-gray-950">
+      <div className="container max-w-6xl mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
+          <div className="flex flex-col gap-6">
             <div className="inline-flex items-center gap-2 text-green-500 mb-4">
               <span className="text-sm font-semibold uppercase tracking-wide">
                 Câu Chuyện Của Chúng Tôi
@@ -19,7 +19,7 @@ const AboutUs = () => {
               Hành Trình Xây Dựng Tương Lai Xanh
             </h2>
 
-            <div className="space-y-4 text-muted-foreground leading-relaxed dark:text-white">
+            <div className="flex flex-col gap-2 text-muted-foreground leading-relaxed dark:text-white">
               <p>
                 Được thành lập vào năm 2020, EV-Station ra đời từ niềm đam mê
                 với công nghệ xanh và mong muốn góp phần giảm thiểu ô nhiễm môi

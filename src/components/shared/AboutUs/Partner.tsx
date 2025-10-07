@@ -14,8 +14,8 @@ const partners = [
 const Partner = () => {
   return (
     <section className="py-20 overflow-hidden relative">
-      <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center mb-16">
+      <div className="container flex flex-col mx-auto px-4 gap-8">
+        <div className="max-w-3xl mx-auto text-center mb-10">
           <div className="inline-flex items-center gap-2 text-green-600 mb-4">
             <Icon icon="mdi:handshake" className="w-6 h-6" />
             <span className="text-sm font-semibold uppercase tracking-wide">Đối Tác</span>
