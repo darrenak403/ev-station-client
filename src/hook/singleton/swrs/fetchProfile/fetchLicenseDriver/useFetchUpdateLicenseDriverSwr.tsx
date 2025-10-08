@@ -32,7 +32,7 @@ export const useFetchUpdateLicenseDriverSwrCore = () => {
     setLoading(true);
     setError(null);
     try {
-      console.log(">>> Payload in updateLicenseDriver:", payload);
+      //console.log(">>> Payload in updateLicenseDriver:", payload);
       const result = await putMutationFetcher<
         UpdateLicenseDriverResponse,
         UpdateLicenseDriverRequest
