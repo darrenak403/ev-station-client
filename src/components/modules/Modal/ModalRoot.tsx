@@ -7,6 +7,7 @@ import CreateIdCardModal from "./ManageIDCard/CreateIDCard";
 import UpdateIdCardModal from "./ManageIDCard/UpdateIDCard";
 import CreateLicenseDriverModal from "./ManageLicenseDriver/CreateLicenseDriver";
 import UpdateLicenseDriverModal from "./ManageLicenseDriver/UpdateLicenseDriver";
+import UpdateAvatarModal from "./ManageProfile/UpdateAvatar";
 
 export default function ModalsRoot() {
   // chỉ render modal; modals dùng disclosure singleton bên trong
@@ -19,6 +20,7 @@ export default function ModalsRoot() {
       <UpdateIdCardModal />
       <CreateLicenseDriverModal />
       <UpdateLicenseDriverModal />
+      <UpdateAvatarModal />
     </>
   );
 }

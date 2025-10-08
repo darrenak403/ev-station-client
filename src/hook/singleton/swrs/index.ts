@@ -12,3 +12,4 @@ export * from "./fetchProfile/fetchLicenseDriver/useFetchScanLicenseDriverSwr";
 export * from "./fetchProfile/fetchLicenseDriver/useFetchSaveLicenseDriverSwr";
 export * from "./fetchProfile/fetchLicenseDriver/useFetchViewLicenseDriverSwr";
 export * from "./fetchProfile/fetchLicenseDriver/useFetchUpdateLicenseDriverSwr";
+export * from "./fetchProfile/fetchAccount/useFetchUpdateProfleSwr";

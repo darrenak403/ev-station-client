@@ -7,6 +7,7 @@ import { useCreateIDCardDisclosureCore } from "./useManageIDCard/useCreateIDCard
 import { useUpdateIDCardDisclosureCore } from "./useManageIDCard/useUpdateIDCardDisclosure";
 import { useCreateLicenseDriverDisclosureCore } from "./useManageLicenseDriver/useCreateLicenseDriverDisclosure";
 import { useUpdateLicenseDriverDisclosureCore } from "./useManageLicenseDriver/useUpdateLicenseDriverDisclosure";
+import { useUpdateAvatarDisclosureCore } from "./useManageProfile/useUpdateAvatarDisclosure";
 
 export interface DiscloresuresContextType {
   useCreateUserDisclosure: ReturnType<
@@ -30,6 +31,9 @@ export interface DiscloresuresContextType {
   useUpdateLicenseDriverDisclosure: ReturnType<
     typeof useUpdateLicenseDriverDisclosureCore
   >
+  useUpdateAvatarDisclosure: ReturnType<
+    typeof useUpdateAvatarDisclosureCore
+  >;
 }
 
 export const DiscloresuresContext =
@@ -43,6 +47,7 @@ export const DiscloresuresProvider = ({children}: PropsWithChildren) => {
   const useUpdateIDCardDisclosure = useUpdateIDCardDisclosureCore();
   const useCreateLicenseDriverDisclosure = useCreateLicenseDriverDisclosureCore();
   const useUpdateLicenseDriverDisclosure = useUpdateLicenseDriverDisclosureCore();
+  const useUpdateAvatarDisclosure = useUpdateAvatarDisclosureCore();
 
   return (
     <>
@@ -55,6 +60,7 @@ export const DiscloresuresProvider = ({children}: PropsWithChildren) => {
           useUpdateIDCardDisclosure,
           useCreateLicenseDriverDisclosure,
           useUpdateLicenseDriverDisclosure,
+          useUpdateAvatarDisclosure,
         }}
       >
         {children}
