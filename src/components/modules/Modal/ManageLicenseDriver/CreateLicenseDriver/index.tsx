@@ -26,7 +26,6 @@ import {
   useFetchScanLicenseDriverSwrSingleton,
   useFetchUploadImgSingleton,
 } from "@/hook";
-import { LicenseDriver } from "@/components/shared/Profile/PersonalInformation/LicenseDriver";
 
 export const classLicenseOptions = [
   { value: "0", label: "A1" },
@@ -212,6 +211,7 @@ export const CreateLicenseDriverModal = () => {
     const url = URL.createObjectURL(f);
     setFrontFile(f);
     setFrontPreview(url);
+    setFrontImageURL(null);
     formik.setFieldValue("frontImageUrl", url);
     formik.setFieldTouched("frontImageUrl", true);
   };
@@ -223,6 +223,7 @@ export const CreateLicenseDriverModal = () => {
     const url = URL.createObjectURL(f);
     setBackFile(f);
     setBackPreview(url);
+    setBackImageURL(null);
     formik.setFieldValue("backImageUrl", url);
     formik.setFieldTouched("backImageUrl", true);
   };
@@ -231,6 +232,7 @@ export const CreateLicenseDriverModal = () => {
     revokePreview(frontPreview);
     setFrontFile(null);
     setFrontPreview(null);
+    setFrontImageURL(null);
     formik.setFieldValue("frontImageUrl", "");
     formik.setFieldTouched("frontImageUrl", true);
   };
@@ -239,6 +241,7 @@ export const CreateLicenseDriverModal = () => {
     revokePreview(backPreview);
     setBackFile(null);
     setBackPreview(null);
+    setBackImageURL(null);
     formik.setFieldValue("backImageUrl", "");
     formik.setFieldTouched("backImageUrl", true);
   };
@@ -457,7 +460,7 @@ export const CreateLicenseDriverModal = () => {
               <Select
                 label="Hạng bằng"
                 selectedKeys={
-                  formik.values.licenseClass
+                  formik.values.licenseClass != null && formik.values.licenseClass !== ""
                     ? new Set([String(formik.values.licenseClass)])
                     : new Set()
                 }

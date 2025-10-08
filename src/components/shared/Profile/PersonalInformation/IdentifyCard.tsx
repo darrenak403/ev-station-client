@@ -35,7 +35,7 @@ export const IdentifyCard = () => {
       try {
         const response = await viewIDCard(`${user.id}`);
         setIDCard(response.data);
-        console.log("ID Card Data:", response);
+        //console.log("ID Card Data:", response);
       } catch (error) {
         console.error("Failed to fetch ID card:", error);
       }
@@ -70,7 +70,7 @@ export const IdentifyCard = () => {
           kind="green"
           shape="pill"
           onPress={handleOpenModal}
-          className="flex items-center gap-2 bg-transparent text-black dark:text-white"
+          className="flex items-center gap-2 text-black dark:text-white"
         >
           <PencilLineIcon className="w-4 h-4" />
           Chỉnh sửa
@@ -147,7 +147,7 @@ export const IdentifyCard = () => {
                   type="date"
                   value={IDCard?.dateOfBirth || ""}
                   readOnly
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
+                  className=" px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
                 />
               </div>
               <div>

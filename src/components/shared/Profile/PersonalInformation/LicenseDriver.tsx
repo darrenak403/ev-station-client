@@ -22,9 +22,17 @@ export const LicenseDriver = () => {
     openWithData,
   } = useUpdateLicenseDriverDisclosureSingleton();
   const { viewLicenseDriver } = useFetchViewLicenseDriverSwrSingleton();
-  const [LicenseDriver, setLicenseDriver] = useState(null);
+  const [ArrayLicense, setArrayLicense] = useState([]);
   const authState = useSelector((state: RootState) => state.auth);
   const user = authState.data?.user;
+
+  const licenseA = ArrayLicense.find(
+    (license) => license?.licenseClass < 2
+  );
+
+  const licenseB = ArrayLicense.find(
+    (license) => license?.licenseClass >= 2
+  );
 
   useEffect(() => {
     fetchLicenseDriver();
@@ -34,141 +42,133 @@ export const LicenseDriver = () => {
     if (user?.id) {
       try {
         const response = await viewLicenseDriver(`${user.id}`);
-        setLicenseDriver(response.data[0]);
-        //console.log("License Driver Data:", response.data[0]);
+        setArrayLicense(response.data || []);
+        //console.log("License Driver Data:", response.data);
       } catch (error) {
-        console.error("Failed to fetch ID card:", error);
+        console.error("Failed to fetch license driver:", error);
       }
     }
   };
 
-  const handleOpenModal = () => {
-    if (!LicenseDriver) {
+  const handleOpenModal = (licenseType = null) => {
+    if (!licenseType) {
       setOnSuccessCreate(() => fetchLicenseDriver);
       onOpenCreate();
     } else {
       setOnSuccessUpdate(() => fetchLicenseDriver);
-      openWithData(LicenseDriver);
+      openWithData(licenseType);
       onOpenUpdate();
     }
   };
 
-  return (
-    <div className="w-full max-w-3xl xl:max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
+  const renderLicenseCard = (license, title) => (
+    <div className="bg-white rounded-lg border border-gray-200 p-4 dark:bg-gray-900 dark:border-gray-700">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Bằng lái xe
-          </h2>
-          {!LicenseDriver ? (
-            <Chip color="danger">Chưa xác thực</Chip>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+            {title}
+          </h3>
+          {!license ? (
+            <Chip color="danger" size="sm">
+              Chưa có
+            </Chip>
           ) : (
-            <Chip color="success">Đã xác thực</Chip>
+            <Chip color="success" size="sm">
+              Đã có
+            </Chip>
           )}
         </div>
         <MyButton
           kind="green"
           shape="pill"
-          onPress={handleOpenModal}
-          className="flex items-center gap-2 bg-transparent text-black dark:text-white"
+          size="sm"
+          onPress={() => handleOpenModal(license)}
+          className="flex items-center gap-2 dark:text-white"
         >
-          <PencilLineIcon className="w-4 h-4" />
-          Chỉnh sửa
+          <PencilLineIcon className="w-3 h-3" />
+          {license ? "Sửa" : "Thêm"}
         </MyButton>
       </div>
 
-      {!LicenseDriver && (
-        <Alert color="warning" className="mb-6">
-          Vui lòng cập nhật thông tin bằng lái xe để xác thực tài khoản.
-        </Alert>
-      )}
-
-      <div className="grid md:grid-cols-2 gap-8">
-        <div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-4 dark:text-white">
+      <div className="grid md:grid-cols-5 gap-4">
+        <div className="col-span-3">
+          <h4 className="text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
             Hình ảnh
-          </h3>
-          <div className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-center h-64 dark:bg-gray-900 dark:border-gray-700">
-            {!LicenseDriver ? (
+          </h4>
+          <div className="bg-gray-50 rounded-lg p-2 flex items-center justify-center h-32 dark:bg-gray-800">
+            {!license ? (
               <div className="text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <UploadSimpleIcon className="w-8 h-8 text-green-600" />
-                </div>
-                <p className="text-gray-600 text-sm dark:text-gray-300">
-                  Vào Chỉnh sửa để tải ảnh bằng lái xe
+                <UploadSimpleIcon className="w-6 h-6 text-green-600 mx-auto mb-2" />
+                <p className="text-gray-600 text-xs dark:text-gray-300">
+                  Chưa có ảnh
                 </p>
               </div>
             ) : (
               <Image
-                className="w-full h-full object-contain rounded-lg"
+                className="w-full h-full object-contain rounded"  
                 unoptimized
-                src={LicenseDriver?.frontImagePath || ""}
-                alt="License Driver Front"
-                width={500}
-                height={400}
+                src={license?.frontImagePath || ""}
+                alt={`${title} Front`}
+                width={200}
+                height={120}
               />
             )}
           </div>
         </div>
 
-        <div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-4 dark:text-white">
-            Thông tin chung
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                Số bằng lái xe
-              </label>
-              <input
-                type="text"
-                value={LicenseDriver?.licenseNumber || "Chưa cập nhật"}
-                readOnly
-                className="w-full px-3 py-2 border border-gray-300 dark:border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                Họ và tên
-              </label>
-              <input
-                type="text"
-                value={LicenseDriver?.fullName || "Chưa cập nhật"}
-                readOnly
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                  Ngày sinh
-                </label>
-                <input
-                  type="date"
-                  value={LicenseDriver?.dateOfBirth || ""}
-                  readOnly
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                  Hạng bằng
-                </label>
-                <input
-                  type="text"
-                  value={
-                    classLicenseOptions.find(
-                      (x) => x.value === String(LicenseDriver?.licenseClass)
-                    )?.label || ""
-                  }
-                  readOnly
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-900 dark:text-gray-100"
-                />
-              </div>
-            </div>
+        <div className="space-y-2 col-span-2 self-end">
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1 dark:text-gray-400">
+              Số bằng lái
+            </label>
+            <p className="text-sm text-gray-900 dark:text-gray-100">
+              {license?.licenseNumber || "Chưa cập nhật"}
+            </p>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1 dark:text-gray-400">
+              Hạng bằng
+            </label>
+            <p className="text-sm text-gray-900 dark:text-gray-100">
+              {license?.licenseClass != null
+                ? classLicenseOptions.find(
+                    (x) => x.value === String(license.licenseClass)
+                  )?.label
+                : "Chưa cập nhật"}
+            </p>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1 dark:text-gray-400">
+              Ngày cấp
+            </label>
+            <p className="text-sm text-gray-900 dark:text-gray-100">
+              {license?.beginingDate || "Chưa cập nhật"}
+            </p>
           </div>
         </div>
       </div>
+    </div>
+  );
+
+  return (
+    <div className="w-full max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Giấy phép lái xe
+        </h2>
+      </div>
+
+      {ArrayLicense.length === 0 && (
+        <Alert color="warning" className="mb-4">
+          Vui lòng cập nhật thông tin bằng lái xe để xác thực tài khoản.
+        </Alert>
+      )}
+
+      <div className="grid md:grid-cols-2 gap-2">
+        {renderLicenseCard(licenseA, "Hạng Xe máy")}
+        {renderLicenseCard(licenseB, "Hạng Ô tô")}
+      </div>
+
     </div>
   );
 };

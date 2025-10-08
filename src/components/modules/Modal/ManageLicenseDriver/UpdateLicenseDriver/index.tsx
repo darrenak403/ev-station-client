@@ -256,6 +256,7 @@ export const UpdateLicenseDriverModal = () => {
     revokePreview(frontPreview);
     setFrontFile(null);
     setFrontPreview(null);
+    setFrontImageURL(null);
     formik.setFieldValue("frontImageUrl", "");
     formik.setFieldTouched("frontImageUrl", true);
   };
@@ -264,6 +265,7 @@ export const UpdateLicenseDriverModal = () => {
     revokePreview(backPreview);
     setBackFile(null);
     setBackPreview(null);
+    setBackImageURL(null);
     formik.setFieldValue("backImageUrl", "");
     formik.setFieldTouched("backImageUrl", true);
   };
