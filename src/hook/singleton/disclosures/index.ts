@@ -5,3 +5,4 @@ export * from "./useManageIDCard/useCreateIDCardDisclosure";
 export * from "./useManageIDCard/useUpdateIDCardDisclosure";
 export * from "./useManageLicenseDriver/useCreateLicenseDriverDisclosure";
 export * from "./useManageLicenseDriver/useUpdateLicenseDriverDisclosure";
+export * from "./useManageProfile/useUpdateAvatarDisclosure";

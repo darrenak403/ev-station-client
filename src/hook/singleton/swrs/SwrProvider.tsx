@@ -13,6 +13,7 @@ import { useFetchScanLicenseDriverSwrCore } from "./fetchProfile/fetchLicenseDri
 import { useFetchSaveLicenseDriverSwrCore } from "./fetchProfile/fetchLicenseDriver/useFetchSaveLicenseDriverSwr";
 import { useFetchViewLicenseDriverSwrCore } from "./fetchProfile/fetchLicenseDriver/useFetchViewLicenseDriverSwr";
 import { useFetchUpdateLicenseDriverSwrCore } from "./fetchProfile/fetchLicenseDriver/useFetchUpdateLicenseDriverSwr";
+import { useFetchUpdateProfileSwrCore } from "./fetchProfile/fetchAccount/useFetchUpdateProfleSwr";
 
 export interface SwrContextType {
   useFetchLoginSwr: ReturnType<typeof useFetchLoginSwrCore>;
@@ -28,6 +29,7 @@ export interface SwrContextType {
   useFetchSaveLicenseDriverSwr: ReturnType<typeof useFetchSaveLicenseDriverSwrCore>; 
   useFetchViewLicenseDriverSwr: ReturnType<typeof useFetchViewLicenseDriverSwrCore>;
   useFetchUpdateLicenseDriverSwr: ReturnType<typeof useFetchUpdateLicenseDriverSwrCore>;
+  useFetchUpdateProfileSwr: ReturnType<typeof useFetchUpdateProfileSwrCore>;
 }
 
 export const SwrContext = createContext<SwrContextType | null>(null);
@@ -46,6 +48,7 @@ export const SwrProvider = ({children}: PropsWithChildren) => {
   const useFetchSaveLicenseDriverSwr = useFetchSaveLicenseDriverSwrCore();
   const useFetchViewLicenseDriverSwr = useFetchViewLicenseDriverSwrCore();
   const useFetchUpdateLicenseDriverSwr = useFetchUpdateLicenseDriverSwrCore();
+  const useFetchUpdateProfileSwr = useFetchUpdateProfileSwrCore();
 
   return (
     <>
@@ -64,6 +67,7 @@ export const SwrProvider = ({children}: PropsWithChildren) => {
           useFetchSaveLicenseDriverSwr,
           useFetchViewLicenseDriverSwr,
           useFetchUpdateLicenseDriverSwr,
+          useFetchUpdateProfileSwr,
         }}
       >
         {children}
